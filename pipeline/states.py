@@ -34,8 +34,12 @@ def _num(s):
 
 
 def _year(s):
-    y = pd.Series(s, dtype='string').str.extract(r'((?:18|19|20)\d\d)', expand=False)
-    return pd.to_numeric(y, errors='coerce')
+    s = pd.Series(s, dtype='string')
+    # ArcGIS date fields arrive as epoch milliseconds
+    ms = pd.to_numeric(s.where(s.str.fullmatch(r'-?\d{11,13}(\.0)?', na=False)), errors='coerce')
+    from_ms = pd.to_datetime(ms, unit='ms', errors='coerce').dt.year
+    y = pd.to_numeric(s.str.extract(r'((?:18|19|20)\d\d)', expand=False), errors='coerce')
+    return from_ms.where(from_ms.notna(), y).astype('float')
 
 
 def _first(*names):

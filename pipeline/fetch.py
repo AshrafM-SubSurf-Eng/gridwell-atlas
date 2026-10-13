@@ -3,7 +3,8 @@
 group=registry   state well registries: downloaded every run; a changed SHA-256
                  is what tells the refresh that new wells may have been recorded.
 group=reference  federal layers pinned by SHA-256. A cached copy with the pinned
-                 hash is reused; a download whose hash differs is NOT used -- the
+                 hash is reused, else the copy kept in data/reference, else the
+                 agency download; a download whose hash differs is NOT used -- the
                  build stops and a review issue is opened, because a silently
                  replaced reference file would change results without a record.
                  next_vintage URLs are probed so a new annual release is noticed.
@@ -23,6 +24,9 @@ from .paths import RAW, MANIFEST, SOURCES
 
 UA = 'GRIDWELL-Atlas/0.2 (+https://github.com/AshrafM-SubSurf-Eng/gridwell-atlas; monthly research refresh)'
 TIMEOUT = 300
+# Copies of the pinned reference files kept in the repository (data/reference), so a
+# build never depends on a federal server being up; each is checked against its pin.
+REFERENCE = Path(__file__).resolve().parents[1] / 'data' / 'reference'
 
 
 def sha256(path: Path) -> str:
@@ -93,6 +97,25 @@ def _arcgis(sess, src, dest: Path):
     return tmp, {'records': n}
 
 
+def _repo_copy(src, dest: Path, pin: str) -> bool:
+    name = Path(src['save_as']).name
+    for cand in (REFERENCE / name, REFERENCE / (name + '.gz')):
+        if not cand.exists():
+            continue
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_suffix(dest.suffix + '.part')
+        if cand.suffix == '.gz' and not name.endswith('.gz'):
+            with gzip.open(cand, 'rb') as fi, open(tmp, 'wb') as fo:
+                shutil.copyfileobj(fi, fo)
+        else:
+            shutil.copyfile(cand, tmp)
+        if sha256(tmp) == pin:
+            tmp.replace(dest)
+            return True
+        tmp.unlink()
+    return False
+
+
 def _unzip(zpath: Path, into: Path):
     into.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(zpath) as z:
@@ -135,6 +158,8 @@ def run(only=None, offline=False):
                 pin = s['sha256']
                 if dest.exists() and sha256(dest) == pin:
                     rec.update(sha256=pin, bytes=dest.stat().st_size, from_cache=True)
+                elif _repo_copy(s, dest, pin):
+                    rec.update(sha256=pin, bytes=dest.stat().st_size, from_repository=True)
                 elif offline:
                     raise FileNotFoundError(f'{dest} missing or not the pinned file')
                 else:

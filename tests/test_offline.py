@@ -78,3 +78,10 @@ def test_change_detection():
     assert c['added_n'] == 1 and c['removed_n'] == 1 and c['reclassified_n'] == 1
     assert c['transitions'] == {'IN→PA': 1}
     assert D.compare(None, cur, inv)['baseline'] is True
+
+
+def test_year_parsing_handles_arcgis_epoch_ms():
+    from pipeline.states import _year
+    y = _year(['1262304000000', '1262304000000.0', '2015-03-01', '03/04/1987', '', None])
+    assert list(y[:4]) == [2010.0, 2010.0, 2015.0, 1987.0]
+    assert y[4:].isna().all()
