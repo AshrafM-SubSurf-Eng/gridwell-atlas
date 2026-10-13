@@ -85,3 +85,14 @@ def test_year_parsing_handles_arcgis_epoch_ms():
     y = _year(['1262304000000', '1262304000000.0', '2015-03-01', '03/04/1987', '', None])
     assert list(y[:4]) == [2010.0, 2010.0, 2015.0, 1987.0]
     assert y[4:].isna().all()
+
+
+def test_refresh_holds_large_count_changes():
+    from pipeline.refresh import sanity_check
+    def st(n, by):
+        return {'inv': {'n': n, 'by_state': {k: {'c': {'IN': v}} for k, v in by.items()}}}
+    old = st(1000, {'OK': 500, 'KS': 500})
+    assert sanity_check(old, st(1010, {'OK': 505, 'KS': 505}), ['OK', 'KS']) == []
+    probs = sanity_check(old, st(600, {'OK': 100, 'KS': 500}), ['OK', 'KS'])
+    assert any(p.startswith('OK:') for p in probs) and any(p.startswith('inventory') for p in probs)
+    assert sanity_check(None, st(10, {'OK': 10}), ['OK']) == []

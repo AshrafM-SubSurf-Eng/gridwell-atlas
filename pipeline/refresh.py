@@ -5,7 +5,8 @@
 Writes, for the workflow to act on:
   build/refresh_result.json   what happened (changed sources, stale sources, counts)
   build/release_notes.md      body of the dated GitHub release
-  build/issues.json           review issues to open (new vintages, pin mismatches, failures)
+  build/issues.json           review issues to open (new vintages, pin mismatches, failures,
+                              and builds held because a state's well count moved too far)
 and appends one line to CHANGELOG.md when a new build was published.
 """
 from __future__ import annotations
@@ -14,8 +15,33 @@ from datetime import date
 from .paths import BUILD, ROOT, SITE_DATA
 from . import fetch
 
+# A registry whose well count moves more than this between refreshes is more likely a
+# changed agency file layout than a real change, so the build is held for review.
+MAX_DROP, MAX_RISE = 0.20, 0.50
 
-def main(prev_snapshot=None, force=False, offline=False):
+
+def _state_counts(stats):
+    by = (stats or {}).get('inv', {}).get('by_state', {})
+    return {st: sum(v.get('c', {}).values()) for st, v in by.items()}
+
+
+def sanity_check(old_stats, new_stats, registry_states):
+    """Compare a new build with the published one; return a list of problems."""
+    if not old_stats:
+        return []
+    old, new = _state_counts(old_stats), _state_counts(new_stats)
+    probs = []
+    for st in registry_states:
+        a, b = old.get(st, 0), new.get(st, 0)
+        if a and (b < a * (1 - MAX_DROP) or b > a * (1 + MAX_RISE)):
+            probs.append(f'{st}: {a:,} -> {b:,} wells ({(b - a) / a:+.0%})')
+    a, b = old_stats.get('inv', {}).get('n', 0), new_stats['inv']['n']
+    if a and b < a * (1 - MAX_DROP / 2):
+        probs.append(f'inventory: {a:,} -> {b:,} wells ({(b - a) / a:+.0%})')
+    return probs
+
+
+def main(prev_snapshot=None, force=False, offline=False, allow_large_change=False):
     man = fetch.run(offline=offline)
     rep = man['report']
     issues = []
@@ -44,8 +70,30 @@ def main(prev_snapshot=None, force=False, offline=False):
     elif not (changed or force):
         result['reason'] = 'no registry changed since the last refresh'
     else:
+        import shutil
         from . import build
+        from .inventory import REGISTRY_STATES
+        old_stats = json.loads((SITE_DATA / 'stats.json').read_text()) if (SITE_DATA / 'stats.json').exists() else None
+        backup = BUILD / 'site_data_published'
+        shutil.rmtree(backup, ignore_errors=True)
+        if SITE_DATA.exists():
+            shutil.copytree(SITE_DATA, backup)
         inv, s = build.main(prev_snapshot)
+        probs = [] if allow_large_change else sanity_check(old_stats, s, REGISTRY_STATES)
+        if probs:
+            shutil.rmtree(SITE_DATA)
+            shutil.copytree(backup, SITE_DATA)
+            result['reason'] = 'held for review: ' + '; '.join(probs)
+            issues.append({'title': f"Refresh held for review ({result['date']})",
+                           'body': 'The new build changed these well counts by more than the review threshold '
+                                   f'(-{MAX_DROP:.0%} / +{MAX_RISE:.0%} for a state):\n\n' + '\n'.join(f'- {p}' for p in probs)
+                                   + '\n\nThis usually means an agency changed its file layout or status codes. The published '
+                                     'data were left unchanged. If the change is real, re-run **Monthly data refresh** with '
+                                     '*force* and *allow large change* ticked.'})
+            (BUILD / 'issues.json').write_text(json.dumps(issues, indent=1))
+            (BUILD / 'refresh_result.json').write_text(json.dumps(result, indent=1))
+            print(json.dumps(result, indent=1))
+            return 3
         ch = s['changes']
         result.update(built=True, wells=s['inv']['n'], by_class=s['inv']['by_class'], by_fit=s['inv']['by_fit'],
                       added=ch.get('added_n', 0), removed=ch.get('removed_n', 0), reclassified=ch.get('reclassified_n', 0),
@@ -84,5 +132,6 @@ if __name__ == '__main__':
     ap.add_argument('--prev-snapshot', default=None)
     ap.add_argument('--force', action='store_true')
     ap.add_argument('--offline', action='store_true')
+    ap.add_argument('--allow-large-change', action='store_true', help='publish even if a state count moved past the review threshold')
     a = ap.parse_args()
-    sys.exit(main(a.prev_snapshot, a.force, a.offline))
+    sys.exit(main(a.prev_snapshot, a.force, a.offline, a.allow_large_change))

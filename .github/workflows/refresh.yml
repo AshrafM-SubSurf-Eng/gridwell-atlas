@@ -12,6 +12,10 @@ on:
         description: Rebuild even if no registry changed
         type: boolean
         default: false
+      allow_large_change:
+        description: Publish even if a state's well count moved more than the review threshold
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -63,6 +67,7 @@ jobs:
           args=""
           if [ -f prev/snapshot.csv.gz ]; then args="--prev-snapshot prev/snapshot.csv.gz"; fi
           if [ "${{ inputs.force }}" = "true" ]; then args="$args --force"; fi
+          if [ "${{ inputs.allow_large_change }}" = "true" ]; then args="$args --allow-large-change"; fi
           python -m pipeline.refresh $args
           code=$?
           python -c "import json;print('built=' + str(json.load(open('build/refresh_result.json'))['built']).lower())" >> "$GITHUB_OUTPUT"
