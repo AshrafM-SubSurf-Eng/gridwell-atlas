@@ -71,6 +71,10 @@ python -m http.server -d site     # open http://localhost:8000
 python -m pytest -q tests         # offline tests, no downloads needed
 ```
 
+## Tools used
+
+The author used Claude (Anthropic), an AI assistant, as a software and writing tool to retrieve and process the public data sets, write the pipeline and the atlas page, and draft the accompanying paper, under the author's direction. Claude is a tool used in the work, not an author; the author is responsible for the methods, results and citations.
+
 ## Licence and citation
 
 Code: MIT (`LICENSE`). Derived data: CC BY 4.0 (`LICENSE-DATA.md`). Inputs keep their own terms. Cite with `CITATION.cff`.
