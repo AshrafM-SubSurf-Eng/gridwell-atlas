@@ -73,7 +73,7 @@ python -m pytest -q tests         # offline tests, no downloads needed
 
 ## Tools used
 
-The author used Claude (Anthropic), an AI assistant, as a software and writing tool to retrieve and process the public data sets, write the pipeline and the atlas page, and draft the accompanying paper, under the author's direction. Claude is a tool used in the work, not an author; the author is responsible for the methods, results and citations.
+The author used Claude (Anthropic), an AI assistant, as a tool to get and process the data and to write the code and the atlas page.
 
 ## Licence and citation
 
