@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-12",
+ "generated": "2026-10-13",
  "version": "0.2.0",
  "counties": 3235,
  "ec2026_counties": 867,
@@ -49,12 +49,12 @@
  },
  "qa": {
   "registry": {
-   "rows": 863758,
-   "classified": 832577,
+   "rows": 863760,
+   "classified": 832579,
    "state_orphan_list": 31181,
    "no_coordinates": 9411,
    "county_by_name": 488917,
-   "county_by_point": 372597,
+   "county_by_point": 372599,
    "county_unassigned": 2244,
    "name_point_compared": 480038,
    "name_point_agreement": 0.9972439681858519,
@@ -62,7 +62,7 @@
     "KS": 309059,
     "OK": 276666,
     "CA": 177002,
-    "CO": 62990,
+    "CO": 62992,
     "NY": 23153,
     "ND": 14888
    }
@@ -76,7 +76,7 @@
    "name_point_compared": 113106
   },
   "unify": {
-   "registry_rows_in": 863758,
+   "registry_rows_in": 863760,
    "registry_dup_api_removed": {
     "CA": 0,
     "CO": 5,
@@ -85,7 +85,7 @@
     "NY": 50,
     "OK": 0
    },
-   "registry_rows_out": 852180,
+   "registry_rows_out": 852182,
    "dow_KS_spatial_matched": 1325,
    "dow_KS_spatial_candidates": 2886,
    "dow_KS_possible_duplicates_max": 697,
@@ -128,12 +128,12 @@
     "MS": 30,
     "CO": 10
    },
-   "inventory": 948992,
+   "inventory": 948994,
    "by_class": {
     "PA": 518750,
     "DA": 241664,
     "OR": 130813,
-    "IN": 57765
+    "IN": 57767
    },
    "orphan_flag": 134138,
    "orphan_since_plugged": 3325,
@@ -238,11 +238,11 @@
   }
  },
  "inv": {
-  "n": 948992,
+  "n": 948994,
   "counties": 1240,
   "states": 26,
   "by_class": {
-   "IN": 57765,
+   "IN": 57767,
    "OR": 130813,
    "PA": 518750,
    "DA": 241664
@@ -250,9 +250,9 @@
   "by_fit": {
    "A": 300,
    "B": 16,
-   "C": 1902,
+   "C": 1901,
    "D": 7308,
-   "E": 372855,
+   "E": 372858,
    "U": 566611
   },
   "by_fit_grid": {
@@ -260,7 +260,7 @@
    "B": 0,
    "C": 273,
    "D": 2311,
-   "E": 58024,
+   "E": 58027,
    "U": 203523
   },
   "by_fit_grid_ec": {
@@ -268,15 +268,15 @@
    "B": 0,
    "C": 215,
    "D": 2053,
-   "E": 7730,
+   "E": 7733,
    "U": 132533
   },
   "matrix": {
    "IN": {
     "egs": 300,
-    "near": 885,
-    "mod": 3035,
-    "low": 18573,
+    "near": 884,
+    "mod": 3036,
+    "low": 18575,
     "nd": 34972
    },
    "OR": {
@@ -303,7 +303,7 @@
   },
   "by_cov": {
    "registry": {
-    "IN": 57765,
+    "IN": 57767,
     "OR": 47055,
     "PA": 518750,
     "DA": 241664
@@ -369,7 +369,7 @@
    },
    "CO": {
     "c": {
-     "IN": 7179,
+     "IN": 7181,
      "OR": 22,
      "PA": 30398,
      "DA": 25396
@@ -377,12 +377,12 @@
     "fit": {
      "A": 224,
      "B": 0,
-     "C": 786,
+     "C": 785,
      "D": 3583,
-     "E": 56603,
+     "E": 56606,
      "U": 1799
     },
-    "vd_n": 61196
+    "vd_n": 61198
    },
    "IL": {
     "c": {
@@ -762,8 +762,8 @@
   "orphan_flag": 134138,
   "orphan_since_plugged": 3325,
   "public_plug": 17342,
-  "td_n": 385071,
-  "vd_n": 382424,
+  "td_n": 385073,
+  "vd_n": 382426,
   "dev_n": 2647,
   "dev_by_state": {
    "ND": 2324,
@@ -780,15 +780,15 @@
   ],
   "grad_median": 29.64,
   "grad_supported_pct": 98.9,
-  "w69": 264138,
+  "w69": 264141,
   "pl69_median_km": 18.1,
   "ec26": 244341,
   "spud_median": 1979.0
  },
  "cls": {
   "IN": {
-   "n": 57765,
-   "vd_n": 22793,
+   "n": 57767,
+   "vd_n": 22795,
    "td_q": [
     500.0,
     1013.0,
@@ -831,8 +831,8 @@
     203.4,
     232.0
    ],
-   "op_known": 57301,
-   "w69": 26928,
+   "op_known": 57303,
+   "w69": 26931,
    "ec26": 27775,
    "orphan_flag": 0,
    "dow": 0,
@@ -845,22 +845,22 @@
    ],
    "vd_by_state": {
     "KS": 13561,
-    "CO": 7100,
+    "CO": 7102,
     "NY": 1644,
     "ND": 488
    },
-   "ge_10000ft": 429,
+   "ge_10000ft": 428,
    "hist": [
     4111,
     7662,
-    2516,
+    2519,
     2054,
     1569,
-    859,
-    1257,
-    1665,
+    858,
+    1256,
+    1667,
     522,
-    265,
+    264,
     211,
     82,
     17,
@@ -869,8 +869,8 @@
     0
    ],
    "types": {
-    "Gas": 23609,
-    "Other / test": 16575,
+    "Gas": 23612,
+    "Other / test": 16574,
     "Oil": 8670,
     "Injection / disposal": 4023,
     "Dry hole": 2334,
@@ -878,14 +878,14 @@
     "Not reported": 253
    },
    "ttd_ge_90": 4220,
-   "t10_ge_90": 51147,
-   "t15_ge_90": 57155,
-   "ttd_ge_120": 1185,
-   "t10_ge_120": 31749,
-   "t15_ge_120": 51774,
+   "t10_ge_90": 51149,
+   "t15_ge_90": 57157,
+   "ttd_ge_120": 1184,
+   "t10_ge_120": 31751,
+   "t15_ge_120": 51776,
    "ttd_ge_150": 300,
-   "t10_ge_150": 9725,
-   "t15_ge_150": 42034
+   "t10_ge_150": 9726,
+   "t15_ge_150": 42036
   },
   "OR": {
    "n": 130813,
@@ -1284,7 +1284,7 @@
  },
  "changes": {
   "baseline": true,
-  "date": "2026-10-12",
+  "date": "2026-10-13",
   "note": "First build with change tracking: every well is the baseline. From the next monthly refresh, wells that join the inventory are listed here.",
   "added_n": 0,
   "removed_n": 0,
