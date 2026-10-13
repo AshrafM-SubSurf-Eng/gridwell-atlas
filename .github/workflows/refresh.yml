@@ -1,0 +1,122 @@
+name: Monthly data refresh
+
+# Re-downloads the six state well registries on the 3rd of every month, rebuilds
+# the inventory and the EGS screen, records which wells joined the inventory
+# since the previous refresh, publishes a dated release and redeploys the page.
+on:
+  schedule:
+    - cron: '17 9 3 * *'          # 09:17 UTC on the 3rd of every month
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Rebuild even if no registry changed
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    outputs:
+      built: ${{ steps.run.outputs.built }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Restore last downloads
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw
+          key: raw-${{ github.run_id }}
+          restore-keys: raw-
+
+      - name: Fetch previous snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p prev
+          tag=$(gh release list --limit 100 --json tagName --jq '[.[] | select(.tagName | startswith("data-"))][0].tagName // empty')
+          if [ -n "$tag" ]; then gh release download "$tag" --pattern snapshot.csv.gz --dir prev || true; fi
+          ls -la prev
+
+      - name: Refresh
+        id: run
+        run: |
+          set +e
+          args=""
+          if [ -f prev/snapshot.csv.gz ]; then args="--prev-snapshot prev/snapshot.csv.gz"; fi
+          if [ "${{ inputs.force }}" = "true" ]; then args="$args --force"; fi
+          python -m pipeline.refresh $args
+          code=$?
+          python -c "import json;print('built=' + str(json.load(open('build/refresh_result.json'))['built']).lower())" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Save downloads for next month
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw
+          key: raw-${{ github.run_id }}
+
+      - name: Open review issues
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/open_issues.py build/issues.json
+
+      - name: Commit refreshed data
+        if: steps.run.outputs.built == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data data/manifest.json CHANGELOG.md
+          git commit -m "Data refresh $(date -u +%Y-%m-%d)" || echo "nothing to commit"
+          git push
+
+      - name: Publish dated release
+        if: steps.run.outputs.built == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          day=$(date -u +%Y-%m-%d)
+          cp data/manifest.json build/manifest.json
+          gh release create "data-$day" build/snapshot.csv.gz site/data/stats.json site/data/changes.json build/manifest.json \
+            --title "Data refresh $day" --notes-file build/release_notes.md
+
+      - name: Package page
+        if: steps.run.outputs.built == 'true'
+        run: bash .github/scripts/package_site.sh
+
+      - name: Upload page
+        if: steps.run.outputs.built == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: refresh
+    if: needs.refresh.outputs.built == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

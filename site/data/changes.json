@@ -1,0 +1,9 @@
+{
+ "baseline": true,
+ "date": "2026-10-12",
+ "note": "First build with change tracking: every well is the baseline. From the next monthly refresh, wells that join the inventory are listed here.",
+ "added_n": 0,
+ "removed_n": 0,
+ "reclassified_n": 0,
+ "added_by_fips": {}
+}

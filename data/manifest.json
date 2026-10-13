@@ -1,0 +1,171 @@
+{
+ "fetched_at": "2026-10-12T00:00:00+00:00",
+ "note": "Initial build: registries downloaded on 2026-10-12 in the author's browser and checksummed; from the first scheduled run on, GitHub Actions downloads them.",
+ "sources": {
+  "ok": {
+   "layer": "Abandoned wells \u00b7 Oklahoma",
+   "group": "registry",
+   "url": "https://www.oklahoma.gov/content/dam/ok/en/occ/documents/og/ogdatafiles/rbdms-wells.csv",
+   "retrieved": "2026-10-12",
+   "sha256": "4adcc828b0d5fc6d33da28d976714cc080f7924fb52e5c9437ed99f4ec53fbb2",
+   "bytes": 126956553,
+   "http_last_modified": "Sun, 11 Oct 2026 09:30:12 GMT"
+  },
+  "ks": {
+   "layer": "Abandoned wells \u00b7 Kansas",
+   "group": "registry",
+   "url": "https://www.kgs.ku.edu/PRS/Ora_Archive/ks_wells.zip",
+   "retrieved": "2026-10-12",
+   "sha256": "7d6f2148c08d88a840390bf832bd9d22ea43e3a48a00e7fa2bfef31991db3dab",
+   "bytes": 44028388,
+   "http_last_modified": "Fri, 09 Oct 2026 19:59:14 GMT"
+  },
+  "ca": {
+   "layer": "Abandoned wells \u00b7 California",
+   "group": "registry",
+   "url": "https://gis.conservation.ca.gov/server/rest/services/WellSTAR/Wells/MapServer/0",
+   "retrieved": "2026-10-12",
+   "sha256": "eaf9dd2f7b1c753b45bb29c6fac3be6fd22125b750d998721b867b14c3f90198",
+   "bytes": null,
+   "records": 177002,
+   "note": "ArcGIS query extract (Plugged, Idle, PluggedOnly)"
+  },
+  "ny": {
+   "layer": "Abandoned wells \u00b7 New York",
+   "group": "registry",
+   "url": "https://data.ny.gov/api/views/szye-wmt3/rows.csv?accessType=DOWNLOAD",
+   "retrieved": "2026-10-12",
+   "sha256": "fdd95c07a50ac754c576f5b1c4b73cacf2d031a4591fdb720ed951ee78d310ec",
+   "bytes": 22622988,
+   "http_last_modified": "2026-10-08T10:58Z (Socrata rowsUpdatedAt 1791537068)"
+  },
+  "co": {
+   "layer": "Abandoned wells \u00b7 Colorado",
+   "group": "registry",
+   "url": "https://ecmc.state.co.us/documents/data/downloads/gis/WELLS_SHP.ZIP",
+   "retrieved": "2026-10-12",
+   "sha256": "3f3557357d4c21f41c45304de4c61eb99941c96bf82f05ada8205316f740b3a4",
+   "bytes": 15761046
+  },
+  "nd": {
+   "layer": "Abandoned wells \u00b7 North Dakota",
+   "group": "registry",
+   "url": "https://gis.dmr.nd.gov/downloads/oilgas/shapefile/OGD_Wells.zip",
+   "retrieved": "2026-10-12",
+   "sha256": "77c963108d5c07ab78bcd85c61250d22545b305d8efeda94685be0938f52593f",
+   "bytes": 3697345,
+   "http_last_modified": "10/11/2026 3:34:17 AM"
+  },
+  "dow": {
+   "layer": "Documented orphaned wells (26 states)",
+   "group": "static",
+   "url": "https://doi.org/10.5066/P91PJETI",
+   "vendored": "data/static/dow_2022_wells.csv.gz"
+  },
+  "bht": {
+   "layer": "Bottom-hole temperatures",
+   "group": "reference",
+   "url": "https://gdr.openei.org/files/1592/Raw_BHT_aggregated_data.csv",
+   "sha256": "39ceb29f7baec5582ae9411916183c36ef876fae4b758fd6fe5923a78c4cdf92",
+   "retrieved": "2026-10-12"
+  },
+  "cb_county": {
+   "layer": "County boundaries",
+   "group": "reference",
+   "url": "https://www2.census.gov/geo/tiger/GENZ2025/shp/cb_2025_us_county_500k.zip",
+   "sha256": "aa976c00b181939755d0da757f4c7c2dc0103c3b3b4530fb2a91c2bb62fc777c",
+   "retrieved": "2026-10-12"
+  },
+  "gaz_county": {
+   "layer": "County internal points",
+   "group": "reference",
+   "url": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_counties_national.zip",
+   "sha256": "4c90d0f805779923b5958ab13d0c1e9b99fe4932b786bfcf75dd739bb2dcb4ea",
+   "retrieved": "2026-10-12"
+  },
+  "gaz_place": {
+   "layer": "Incorporated places",
+   "group": "reference",
+   "url": "https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip",
+   "sha256": "49644173a453469d9bd77fb7a493b027f87567e209edaf2078aac7543ac2ee29",
+   "retrieved": "2026-10-12"
+  },
+  "pep": {
+   "layer": "Place population",
+   "group": "reference",
+   "url": "https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/cities/totals/sub-est2025.csv",
+   "sha256": "e3508f5201465913476d4ddf91740f191f7977c9f2614a2a7e30b5fd22027934",
+   "retrieved": "2026-10-12"
+  },
+  "eia860": {
+   "layer": "Grid tie-in points",
+   "group": "reference",
+   "url": "https://www.eia.gov/electricity/data/eia860/xls/eia8602025.zip",
+   "sha256": "2b27929d26cc1da9ad6a530da1cac6718cd8496098ee560c4d47cfffd96d08ba",
+   "retrieved": "2026-10-12"
+  },
+  "ec_msa_ffe_u2025_allcounties": {
+   "layer": "Energy communities, 2026 status",
+   "group": "reference",
+   "url": "https://home.treasury.gov/system/files/131/EC_MSA_FFE_U2025_AllCounties.xlsx",
+   "sha256": "60e27818264533ad4983a5271251de40f6a94fc96c865f870d3e9b5ada443307",
+   "retrieved": "2026-10-12"
+  },
+  "ec_msa_ffe_u2024_allcounties": {
+   "layer": "Energy communities, 2025 status",
+   "group": "reference",
+   "url": "https://home.treasury.gov/system/files/131/EC_MSA_FFE_U2024_AllCounties.xlsx",
+   "sha256": "54cab8cc59c5dda271db601ecb978fdb313d0e293707cb15148654135257b989",
+   "retrieved": "2026-10-12"
+  },
+  "ec_msa_ffe_u2023_allcounties": {
+   "layer": "Energy communities, 2024 status",
+   "group": "reference",
+   "url": "https://home.treasury.gov/system/files/131/EC_MSA_FFE_U2023_AllCounties.xlsx",
+   "sha256": "ac7df20d4d53c55996c8d39068f938a10f363da14978f8848615ae0ceef909b9",
+   "retrieved": "2026-10-12"
+  },
+  "ec_msa_ffe_u2022_allcounties": {
+   "layer": "Energy communities, 2023 status",
+   "group": "reference",
+   "url": "https://home.treasury.gov/system/files/131/EC_MSA_FFE_U2022_AllCounties.xlsx",
+   "sha256": "8fe428964872ae4583ffe8458f5cce2ffb18b1a30a5897f38cf7632d7c433b5e",
+   "retrieved": "2026-10-12"
+  },
+  "ec_alltracts_v5": {
+   "layer": "Coal-closure tracts (cumulative)",
+   "group": "reference",
+   "url": "https://home.treasury.gov/system/files/131/EC_AllTracts_V5.xlsx",
+   "sha256": "95148f860ea2e3e3e58b2a8221e7f91259c2adaa2cab0ab8e6c3e573b4eee376",
+   "retrieved": "2026-10-12"
+  },
+  "ec_cc_v5": {
+   "layer": "Coal-closure tract basis",
+   "group": "reference",
+   "url": "https://home.treasury.gov/system/files/131/EC_CC_V5.xlsx",
+   "sha256": "5d44b59f82c1e44c11297a782eaac2de3ff06850d0a9d6b44e8c81573c510604",
+   "retrieved": "2026-10-12"
+  },
+  "irs_2026_39": {
+   "layer": "Energy communities, 2026 (cross-check)",
+   "group": "reference",
+   "url": "https://www.irs.gov/pub/irs-drop/n-26-39-appendix-1.xlsx",
+   "sha256": "eff46d36709ba85bcc1d5c6f74be39d2db5ff837e04f1ecba0664042ab5891b3",
+   "retrieved": "2026-10-12"
+  },
+  "treasury_landing": {
+   "layer": "Treasury energy-community data page (watched for new files)",
+   "group": "watch",
+   "url": "https://home.treasury.gov/policy-issues/tax-policy/data-transparency/all-treasury-generated-energy-communities-data-sets"
+  }
+ },
+ "report": {
+  "changed": [],
+  "unchanged": [],
+  "failed": [],
+  "stale": [],
+  "pin_mismatch": [],
+  "new_vintage": [],
+  "watch_changed": []
+ }
+}

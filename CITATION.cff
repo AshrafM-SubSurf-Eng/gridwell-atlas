@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use GRIDWELL Atlas, please cite it as below."
+title: "GRIDWELL Atlas: Geothermal Repurposing Inventory of Disused Wells"
+abstract: "A self-updating national screen of abandoned oil and gas wells in the United States for repurposing as Enhanced Geothermal System (EGS) wells. One inventory of 948,992 wells from six state registries and the USGS documented orphaned-well dataset, sorted by abandonment type, graded by modelled temperature at each well's own vertical depth, and refreshed monthly."
+authors:
+  - family-names: Mohammed
+    given-names: Ashraf
+    affiliation: Independent Researcher
+    orcid: "https://orcid.org/0009-0000-9232-1466"
+    email: moshraf1310@gmail.com
+version: 0.2.0
+date-released: 2026-10-13
+license: MIT
+repository-code: "https://github.com/AshrafM-SubSurf-Eng/gridwell-atlas"
+url: "https://ashrafm-subsurf-eng.github.io/gridwell-atlas/"
+keywords:
+  - enhanced geothermal systems
+  - abandoned wells
+  - orphaned wells
+  - well repurposing
+  - geothermal energy
+  - energy communities

@@ -1,0 +1,875 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GRIDWELL Atlas</title>
+<meta name="description" content="Self-updating national screen of abandoned US oil and gas wells for Enhanced Geothermal System repurposing: wells sorted by abandonment type, temperature at each well's own depth, grid tie-in and energy-community status for every county.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* A survey-sheet console. National totals and the four abandonment types first;
+   then the map beside the selected county's well file, read top-down like a
+   drilling report: type, EGS screen, temperature log, grid, tax status, wells. */
+:root{
+  --bg:#edf1f0; --surface:#fbfcfb; --surface-2:#e3e9e7; --ink:#101a1d; --ink-2:#3f4f56; --muted:#62727a;
+  --rule:#cdd7d5; --rule-strong:#a9b7b5;
+  --accent:#0a6a82; --accent-soft:#d5e9ee; --accent-ink:#ffffff;
+  --yes:#17733a; --yes-soft:#dcefe2; --no:#6b767a; --warn:#9a5b00; --warn-soft:#f7e8cf;
+  --heat-1:#fbe4c6; --heat-2:#f4b878; --heat-3:#e6843f; --heat-4:#c4531f; --heat-5:#8a2f10;
+  --seq-0:#e5ecea; --seq-1:#cfe5eb; --seq-2:#a0cbd7; --seq-3:#64a9bf; --seq-4:#2f86a2; --seq-5:#0d627c; --seq-6:#083f51;
+  --ec-map:#2f8a4f; --ec-map-cc:#a8d4b4;
+  --c-in:#c9771f; --c-or:#7b3d8c; --c-pa:#0a6a82; --c-da:#8aa1a7;
+  --f-a:#8a2f10; --f-b:#c4531f; --f-c:#e6843f; --f-d:#f2b06c; --f-e:#c9d2d0; --f-u:#e6ebea;
+  --fi-a:#ffffff; --fi-b:#ffffff; --fi-c:#101a1d; --fi-d:#101a1d;
+  --shadow:0 1px 0 rgba(16,26,29,.04),0 8px 24px -16px rgba(16,26,29,.25);
+  --f-display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1214; --surface:#131b1e; --surface-2:#1b2529; --ink:#e4ecee; --ink-2:#b2c0c5; --muted:#8a979c;
+  --rule:#27333a; --rule-strong:#3a4950;
+  --accent:#4db2cc; --accent-soft:#163540; --accent-ink:#06171c;
+  --yes:#4cc27a; --yes-soft:#163222; --no:#8c979b; --warn:#e2a64a; --warn-soft:#33270f;
+  --heat-1:#5a2a12; --heat-2:#8f3e17; --heat-3:#c75f22; --heat-4:#ec8a3f; --heat-5:#f8c88c;
+  --seq-0:#18232a; --seq-1:#173640; --seq-2:#1c4f5d; --seq-3:#22697d; --seq-4:#2f8aa3; --seq-5:#5bb2ca; --seq-6:#a3dcea;
+  --ec-map:#45b46c; --ec-map-cc:#1f4b30;
+  --c-in:#e09a48; --c-or:#c793da; --c-pa:#4db2cc; --c-da:#6c878d;
+  --f-a:#f8c88c; --f-b:#ec8a3f; --f-c:#c75f22; --f-d:#8f3e17; --f-e:#33424a; --f-u:#1f2a2f;
+  --fi-a:#2a1306; --fi-b:#2a1306; --fi-c:#fff3e6; --fi-d:#fff3e6;
+  --shadow:0 1px 0 rgba(0,0,0,.3),0 10px 28px -18px rgba(0,0,0,.8);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0c1214; --surface:#131b1e; --surface-2:#1b2529; --ink:#e4ecee; --ink-2:#b2c0c5; --muted:#8a979c;
+  --rule:#27333a; --rule-strong:#3a4950;
+  --accent:#4db2cc; --accent-soft:#163540; --accent-ink:#06171c;
+  --yes:#4cc27a; --yes-soft:#163222; --no:#8c979b; --warn:#e2a64a; --warn-soft:#33270f;
+  --heat-1:#5a2a12; --heat-2:#8f3e17; --heat-3:#c75f22; --heat-4:#ec8a3f; --heat-5:#f8c88c;
+  --seq-0:#18232a; --seq-1:#173640; --seq-2:#1c4f5d; --seq-3:#22697d; --seq-4:#2f8aa3; --seq-5:#5bb2ca; --seq-6:#a3dcea;
+  --ec-map:#45b46c; --ec-map-cc:#1f4b30;
+  --c-in:#e09a48; --c-or:#c793da; --c-pa:#4db2cc; --c-da:#6c878d;
+  --f-a:#f8c88c; --f-b:#ec8a3f; --f-c:#c75f22; --f-d:#8f3e17; --f-e:#33424a; --f-u:#1f2a2f;
+  --fi-a:#2a1306; --fi-b:#2a1306; --fi-c:#fff3e6; --fi-d:#fff3e6;
+  --shadow:0 1px 0 rgba(0,0,0,.3),0 10px 28px -18px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;padding-inline:clamp(16px,3vw,40px);padding-block:20px 56px;margin:0}
+a{color:var(--accent);text-underline-offset:2px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.wrap{max-width:1440px;margin-inline:auto;display:grid;gap:20px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.num{font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.08}
+h2{font-size:clamp(20px,2.2vw,26px);font-weight:700;font-stretch:88%}
+h3{font-size:16px;font-weight:700;font-stretch:92%;letter-spacing:.005em}
+p{margin:0}
+
+/* masthead */
+.mast{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px 28px;align-items:end;border-bottom:2px solid var(--ink);padding-bottom:16px}
+.word{font-family:var(--f-display);font-weight:800;font-stretch:118%;font-size:clamp(38px,6.4vw,76px);letter-spacing:-.02em;line-height:.9;display:flex;align-items:baseline;gap:.14em;flex-wrap:wrap}
+.word .w2{font-stretch:62%;font-weight:600;color:var(--accent);letter-spacing:0}
+.mast .lede{max-width:70ch;color:var(--ink-2);margin-top:12px;font-size:15.5px}
+.byline{font-size:13px;color:var(--muted);margin-top:8px}
+.side{display:grid;gap:10px;justify-items:end;align-self:start}
+.stamp{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1.5px solid var(--warn);color:var(--warn);padding:6px 10px;border-radius:3px;transform:rotate(-2deg);background:var(--warn-soft);max-width:220px;text-align:center;line-height:1.35}
+.fresh{font-size:12.5px;color:var(--ink-2);border:1px solid var(--rule);background:var(--surface);border-radius:5px;padding:8px 10px;max-width:280px;display:grid;gap:2px}
+.fresh b{font-family:var(--f-mono);font-weight:500;color:var(--ink)}
+.fresh .dotlive{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--yes);margin-right:6px;vertical-align:0}
+@media (max-width:720px){.mast{grid-template-columns:1fr}.side{justify-items:start}.stamp{transform:none}}
+
+/* ledger */
+.ledger{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));border:1px solid var(--rule);background:var(--surface);border-radius:var(--r)}
+.ledger>div{padding:12px 14px;border-right:1px solid var(--rule);display:grid;gap:2px;min-width:0}
+.ledger>div:last-child{border-right:0}
+.ledger b{font-family:var(--f-display);font-stretch:96%;font-size:24px;font-weight:700;letter-spacing:-.01em}
+.ledger span{font-size:12.5px;color:var(--ink-2)}
+@media (max-width:760px){.ledger>div{border-right:0;border-bottom:1px solid var(--rule)}.ledger>div:last-child{border-bottom:0}}
+
+/* abandonment types */
+.types{padding:18px 20px;display:grid;gap:14px}
+.types .intro{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px 28px;align-items:end}
+@media (max-width:900px){.types .intro{grid-template-columns:1fr}}
+.tcards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:1100px){.tcards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.tcards{grid-template-columns:1fr}}
+.tcard{border:1px solid var(--rule);border-top:4px solid var(--c);border-radius:5px;padding:12px 14px;display:grid;gap:8px;align-content:start;background:var(--surface)}
+.tcard .rank{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.tcard .rank span{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tcard .rank b{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.tcard .big{font-family:var(--f-display);font-size:26px;font-weight:700;font-stretch:96%}
+.tcard .big small{font-family:var(--f-body);font-size:12.5px;font-weight:400;color:var(--ink-2)}
+.tcard ul{margin:0;padding-left:16px;display:grid;gap:4px;font-size:12.8px;color:var(--ink-2)}
+.tcard .egs{font-size:12.5px;color:var(--ink-2);border-top:1px dashed var(--rule);padding-top:8px}
+.tcard .egs b{font-family:var(--f-mono);color:var(--ink)}
+.matrixwrap{overflow-x:auto}
+
+/* console */
+.console{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:1080px){.console{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);min-width:0}
+.mapcard{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);padding:14px;display:grid;gap:10px}
+@media (max-width:1080px){.mapcard{position:static}}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 12.5px/1 var(--f-body);border:1px solid var(--rule-strong);background:var(--surface);color:var(--ink-2);padding:7px 10px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.search{position:relative;flex:1 1 220px;max-width:340px}
+.search input{width:100%;font:15px var(--f-body);padding:8px 10px 8px 32px;border:1px solid var(--rule-strong);border-radius:5px;background:var(--surface);color:var(--ink)}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--muted)}
+.sugg{position:absolute;z-index:5;left:0;right:0;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--rule-strong);border-radius:5px;box-shadow:var(--shadow);max-height:280px;overflow:auto;padding:4px 0;margin:0;list-style:none}
+.sugg li{padding:7px 12px;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;gap:10px}
+.sugg li[aria-selected="true"],.sugg li:hover{background:var(--accent-soft)}
+.sugg small{color:var(--muted);font-family:var(--f-mono);font-size:11.5px}
+#map{width:100%;aspect-ratio:975/610;max-width:100%;display:block}
+#map path.c{stroke:var(--surface);stroke-width:.25;cursor:pointer}
+#map path.c:hover{stroke:var(--ink);stroke-width:1}
+#map path.sel{stroke:var(--ink);stroke-width:2}
+#map path.st{fill:none;stroke:var(--ink-2);stroke-width:.6;stroke-opacity:.55;pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12px;color:var(--ink-2)}
+.legend .sw{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px;border:1px solid var(--rule)}
+.ramp{display:flex;align-items:center}
+.ramp i{display:block;width:24px;height:10px}
+.maptip{position:fixed;pointer-events:none;z-index:20;background:var(--ink);color:var(--surface);font-size:12.5px;padding:6px 9px;border-radius:4px;max-width:280px;line-height:1.35}
+.mapnote{font-size:12px;color:var(--muted)}
+
+/* dossier */
+.dossier{display:grid;gap:16px}
+.dhead{padding:16px 18px;display:grid;gap:8px}
+.dhead .row{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.dhead h2{font-size:clamp(24px,2.8vw,34px)}
+.fips{font-family:var(--f-mono);font-size:12.5px;color:var(--muted)}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:500;padding:4px 9px;border-radius:999px;border:1px solid var(--rule);background:var(--surface-2);color:var(--ink-2)}
+.pill svg{width:13px;height:13px}
+.pill.yes{background:var(--yes-soft);border-color:transparent;color:var(--yes)}
+.pill.no{color:var(--no)}
+.pill.acc{background:var(--accent-soft);color:var(--accent);border-color:transparent}
+.pill.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.pill.hot{background:var(--heat-1);color:var(--heat-5);border-color:transparent}
+.sec{padding:16px 18px;display:grid;gap:14px}
+.sec>header{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--rule);padding-bottom:10px}
+.sec>header .src{font-size:12px;color:var(--muted)}
+.sec.types-c{border-top:3px solid var(--c-pa)}
+.sec.egs{border-top:3px solid var(--heat-4)}
+.sec.thermal{border-top:3px solid var(--heat-3)}
+.sec.grid{border-top:3px solid var(--ink-2)}
+.sec.tax{border-top:3px solid var(--yes)}
+.sec.cands{border-top:3px solid var(--f-a)}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px 18px}
+.kv>div{display:grid;gap:1px;min-width:0}
+.kv .k{font-size:12px;color:var(--muted)}
+.kv .v{margin:0;font-family:var(--f-display);font-stretch:95%;font-size:21px;font-weight:650;line-height:1.15}
+.kv .v small{font-family:var(--f-body);font-size:12px;font-weight:400;color:var(--ink-2);font-stretch:100%}
+.note{font-size:13px;color:var(--ink-2);max-width:74ch}
+.note.muted{color:var(--muted)}
+.empty{font-size:14px;color:var(--ink-2);background:var(--surface-2);border-radius:5px;padding:12px 14px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.two>*{min-width:0}
+.clsbar{display:flex;height:16px;border-radius:3px;overflow:hidden;gap:2px;background:var(--surface)}
+.clsbar>i{display:block;min-width:2px}
+.clskey{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-2)}
+.clskey b{font-family:var(--f-mono);font-weight:500;color:var(--ink)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:0}
+.fitrows{display:grid;gap:6px}
+.fitrow{display:grid;grid-template-columns:28px minmax(0,1fr) 92px;gap:10px;align-items:center;font-size:12.8px}
+.fitrow .tag{font-family:var(--f-mono);font-weight:600;text-align:center;border-radius:3px;padding:2px 0;font-size:12px}
+.fitrow .lab{color:var(--ink-2);min-width:0}
+.fitrow .bar{height:6px;border-radius:3px;background:var(--surface-2);margin-top:4px;overflow:hidden}
+.fitrow .bar i{display:block;height:100%}
+.fitrow .n{font-family:var(--f-mono);text-align:right;color:var(--ink)}
+.fitrow .n small{display:block;font-size:10.5px;color:var(--muted)}
+svg.chart{width:100%;height:auto;display:block;overflow:visible}
+svg.chart text{font-family:var(--f-mono);font-size:10.5px;fill:var(--muted)}
+svg.chart .lbl{fill:var(--ink-2)}
+svg.chart .gridl{stroke:var(--rule);stroke-width:1}
+svg.chart .axis{stroke:var(--rule-strong);stroke-width:1}
+.chartcap{font-size:12px;color:var(--muted);margin-top:4px}
+.hist{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+.hist>div{border:1px solid var(--rule);border-radius:4px;padding:6px 8px;display:grid;gap:2px;font-size:12px;color:var(--ink-2)}
+.hist>div b{font-family:var(--f-mono);font-size:12.5px;color:var(--ink)}
+.hist>div.y{background:var(--yes-soft);border-color:transparent;color:var(--yes)}
+.hist>div.y b{color:var(--yes)}
+.hist>div.na{opacity:.6}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.tab{font:600 13px var(--f-body);background:none;border:0;border-bottom:2px solid transparent;padding:8px 10px;color:var(--ink-2);cursor:pointer;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tscroll{overflow-x:auto;max-height:440px;overflow-y:auto;border:1px solid var(--rule);border-radius:5px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{padding:6px 8px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--rule)}
+th{position:sticky;top:0;background:var(--surface-2);font-weight:600;font-size:11.5px;color:var(--ink-2);z-index:1}
+td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+td.n small{color:var(--muted)}
+tbody tr:hover{background:var(--accent-soft)}
+td input{accent-color:var(--accent)}
+.ftag{display:inline-block;min-width:20px;text-align:center;font-family:var(--f-mono);font-weight:600;border-radius:3px;padding:1px 4px;font-size:11.5px}
+.newtag{font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;background:var(--yes-soft);color:var(--yes);border-radius:3px;padding:1px 5px;margin-left:4px}
+.mtab td,.mtab th{text-align:right;font-family:var(--f-mono)}
+.mtab td:first-child,.mtab th:first-child{text-align:left;font-family:var(--f-body)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:600 13px var(--f-body);padding:8px 12px;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.toast{font-size:12.5px;color:var(--ink-2)}
+textarea.out{width:100%;min-height:140px;font:12px/1.4 var(--f-mono);background:var(--surface-2);color:var(--ink);border:1px solid var(--rule);border-radius:5px;padding:10px}
+.unitsw{display:inline-flex;border:1px solid var(--rule-strong);border-radius:999px;overflow:hidden}
+.unitsw button{font:500 12px var(--f-body);border:0;background:transparent;color:var(--ink-2);padding:6px 10px;cursor:pointer}
+.unitsw button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+
+/* updates + methods */
+.updates{padding:18px 20px;display:grid;gap:12px}
+.methods{padding:20px 22px;display:grid;gap:18px}
+.methods .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px 32px}
+.methods .cols>*{min-width:0}
+.methods p,.methods li{font-size:13.5px;color:var(--ink-2);max-width:72ch}
+.methods ul{margin:6px 0 0;padding-left:18px;display:grid;gap:5px}
+.srcs{font-size:12.5px}
+.srcs td{white-space:normal;vertical-align:top}
+.srcs td.h{font-family:var(--f-mono);font-size:10.5px;color:var(--muted);word-break:break-all;min-width:120px}
+.foot{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between;border-top:1px solid var(--rule);padding-top:12px}
+.loading{padding:40px 18px;color:var(--muted)}
+.wrap>*,.console>*,.dossier>*,.sec>*,.methods>*,.mapcard>*,.dhead>*,.types>*,.updates>*{min-width:0}
+@media (prefers-reduced-motion:no-preference){#map path.c{transition:fill .25s ease}}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <div class="eyebrow">Geothermal Repurposing Inventory of Disused Wells</div>
+      <div class="word" aria-label="GRIDWELL Atlas"><span>GRIDWELL</span><span class="w2">Atlas</span></div>
+      <p class="lede">Which of America's abandoned oil and gas wells could be turned into Enhanced Geothermal System (EGS) wells? GRIDWELL sorts every inactive or unproductive well by how it was abandoned, estimates the rock temperature at its own depth, and measures how far it sits from a high-voltage grid connection and whether it earns the energy-community tax-credit bonus. Pick any county.</p>
+      <p class="byline">Ashraf Mohammed · Independent Researcher · ORCID <a href="https://orcid.org/0009-0000-9232-1466">0009-0000-9232-1466</a> · v<span class="mono" id="ver">—</span></p>
+    </div>
+    <div class="side">
+      <div class="stamp" role="note">Draft · awaiting author verification</div>
+      <div class="fresh" id="fresh" aria-live="polite"><span class="eyebrow">Data status</span><span>Loading…</span></div>
+    </div>
+  </header>
+
+  <section class="ledger" id="ledger" aria-label="National totals"></section>
+
+  <section class="panel types" aria-labelledby="th">
+    <div class="intro">
+      <div>
+        <div class="eyebrow">Abandonment types, best EGS fit first</div>
+        <h2 id="th">Orphaned wells are abandoned wells. What differs is who owns them and what is left in the hole.</h2>
+      </div>
+      <div class="unitrow" style="display:flex;gap:10px;align-items:center;justify-content:flex-end;flex-wrap:wrap">
+        <span class="note muted">Units</span>
+        <div class="unitsw" role="group" aria-label="Units"><button type="button" data-u="field" aria-pressed="true">Field (SI)</button><button type="button" data-u="si" aria-pressed="false">SI (field)</button></div>
+      </div>
+    </div>
+    <div class="tcards" id="tcards"></div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:6px">Every graded well: abandonment type × temperature at its own vertical depth</div>
+      <div class="matrixwrap" id="nmatrix"></div>
+      <p class="note muted" id="nmatrixNote" style="margin-top:6px"></p>
+    </div>
+  </section>
+
+  <div class="console">
+    <section class="panel mapcard" aria-label="National map">
+      <div class="toolbar">
+        <div class="search" role="combobox" aria-expanded="false" aria-owns="sugg" aria-haspopup="listbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q" type="search" autocomplete="off" placeholder="Find a county, e.g. McKenzie ND" aria-label="Find a county" aria-autocomplete="list" aria-controls="sugg">
+          <ul class="sugg" id="sugg" role="listbox" hidden></ul>
+        </div>
+        <div class="chips" role="group" aria-label="Map layer">
+          <button class="chip" data-l="egs" aria-pressed="true" type="button">Wells rated A–D</button>
+          <button class="chip" data-l="all" aria-pressed="false" type="button">All abandoned</button>
+          <button class="chip" data-l="t10" aria-pressed="false" type="button">Heat at 10,000 ft</button>
+          <button class="chip" data-l="ec" aria-pressed="false" type="button">Energy community</button>
+        </div>
+      </div>
+      <svg id="map" viewBox="0 0 975 610" role="img" aria-label="Map of US counties"></svg>
+      <div class="legend" id="legend"></div>
+      <p class="mapnote" id="mapnote"></p>
+    </section>
+    <div class="dossier" id="dossier" aria-live="polite">
+      <div class="panel loading">Loading county data…</div>
+    </div>
+  </div>
+
+  <section class="panel updates" aria-labelledby="uh">
+    <div class="eyebrow">Self-updating</div>
+    <h2 id="uh">What changed since the last refresh</h2>
+    <div id="updates" style="display:grid;gap:10px"></div>
+  </section>
+
+  <section class="panel methods" aria-labelledby="mh">
+    <div class="eyebrow">Method, evidence and sources</div>
+    <h2 id="mh">How the atlas is built</h2>
+    <div class="cols" id="methodCols"></div>
+    <div>
+      <h3 style="margin-bottom:8px">Sources</h3>
+      <div class="tscroll" style="max-height:none"><table class="srcs" id="srcTable"><thead><tr><th>Layer</th><th>Publisher and dataset</th><th>Retrieved / vintage</th><th>Refresh</th><th>SHA-256 of file used</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="foot"><span>GRIDWELL Atlas · built from public federal and state records · data CC BY 4.0, code MIT · screening information, not engineering, legal or tax advice</span><span id="footStats"></span></div>
+  </section>
+</div>
+<div class="maptip" id="tip" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const fmt = d3.format(',');
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const SURF_C = 15;
+const TYPES = ['IN', 'OR', 'PA', 'DA'];
+const TNAME = {IN: 'Inactive, unplugged', OR: 'Orphaned, unplugged', PA: 'Plugged and abandoned', DA: 'Dry and abandoned'};
+const TCOL = {IN: 'var(--c-in)', OR: 'var(--c-or)', PA: 'var(--c-pa)', DA: 'var(--c-da)'};
+const FITS = ['A', 'B', 'C', 'D', 'E', 'U'];
+const FCOL = {A: 'var(--f-a)', B: 'var(--f-b)', C: 'var(--f-c)', D: 'var(--f-d)', E: 'var(--f-e)', U: 'var(--f-u)'};
+const FINK = {A: 'var(--fi-a)', B: 'var(--fi-b)', C: 'var(--fi-c)', D: 'var(--fi-d)', E: 'var(--ink)', U: 'var(--ink-2)'};
+const FSHORT = {A: 'Best fit', B: 'Strong, after transfer', C: 'Conditional', D: 'Limited', E: 'Below EGS grade', U: 'Not graded'};
+const GRADES = [['egs', '≥ 302 °F (150 °C)'], ['near', '248–302 °F (120–150 °C)'], ['mod', '194–248 °F (90–120 °C)'], ['low', '< 194 °F (90 °C)'], ['nd', 'No vertical depth']];
+const GRADES_SI = {egs: '≥ 150 °C (302 °F)', near: '120–150 °C (248–302 °F)', mod: '90–120 °C (194–248 °F)', low: '< 90 °C (194 °F)', nd: 'No vertical depth'};
+const CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m3 8.5 3.2 3L13 4.5"/></svg>';
+const CROSS = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg>';
+
+// ---------- units: field first, SI in brackets (switchable) ----------
+let UNITS = 'field';
+try { UNITS = localStorage.getItem('gw-units') || 'field'; } catch (e) {}
+const n0 = v => Math.round(v).toLocaleString('en-US');
+const n1 = v => (Math.round(v * 10) / 10).toLocaleString('en-US', {maximumFractionDigits: 1});
+const pair = (a, b) => UNITS === 'field' ? `${a} (${b})` : `${b} (${a})`;
+const cToF = c => c * 9 / 5 + 32;
+const T = c => c == null ? '—' : pair(`${n0(cToF(c))} °F`, `${n0(c)} °C`);
+const Tbig = c => c == null ? '—' : UNITS === 'field' ? `${n0(cToF(c))} <small>°F (${n0(c)} °C)</small>` : `${n0(c)} <small>°C (${n0(cToF(c))} °F)</small>`;
+const Dft = ft => ft == null ? '—' : pair(`${n0(ft)} ft`, `${n0(ft * 0.3048)} m`);
+const Dm = m => m == null ? '—' : pair(`${n0(m / 0.3048)} ft`, `${n0(m)} m`);
+const Dbig_m = m => m == null ? '—' : UNITS === 'field' ? `${n0(m / 0.3048)} <small>ft (${n0(m)} m)</small>` : `${n0(m)} <small>m (${n0(m / 0.3048)} ft)</small>`;
+const Dbig_ft = ft => ft == null ? '—' : Dbig_m(ft * 0.3048);
+const Km = k => k == null ? '—' : pair(`${n1(k * 0.621371)} mi`, `${n1(k)} km`);
+const Kmbig = k => k == null ? '—' : UNITS === 'field' ? `${n1(k * 0.621371)} <small>mi (${n1(k)} km)</small>` : `${n1(k)} <small>km (${n1(k * 0.621371)} mi)</small>`;
+const G = g => g == null ? '—' : pair(`${(g * 0.054864).toFixed(2)} °F/100 ft`, `${n1(g)} °C/km`);
+const Gbig = g => g == null ? '—' : UNITS === 'field' ? `${(g * 0.054864).toFixed(2)} <small>°F/100 ft (${n1(g)} °C/km)</small>` : `${n1(g)} <small>°C/km (${(g * 0.054864).toFixed(2)} °F/100 ft)</small>`;
+const Area = km2 => km2 == null ? '—' : pair(`${n0(km2 * 0.386102)} sq mi`, `${n0(km2)} km²`);
+
+let C = [], byF = new Map(), CAND = null, STATS = null, META = null, CHG = null, SRC = null, topo = null;
+let layer = 'egs', selected = null, downloads = null;
+
+Promise.all(['counties', 'counties.topo', 'stats', 'meta', 'changes', 'sources'].map(n => fetch(`data/${n}.json`).then(r => { if (!r.ok) throw new Error(n + ' ' + r.status); return r.json(); })))
+  .then(([c, t, s, m, ch, src]) => {
+    C = c; C.forEach(r => byF.set(r.f, r)); topo = t; STATS = s; META = m; CHG = ch; SRC = src;
+    renderAll();
+    drawMap();
+    const h = (location.hash || '').replace('#c', '');
+    select(byF.has(h) ? h : '38053', false);
+    fetch('data/candidates.json').then(r => r.json()).then(j => { CAND = j; if (selected) renderCandidates(byF.get(selected)); });
+  })
+  .catch(err => { $('#dossier').innerHTML = `<div class="panel loading">The data did not load (${esc(err.message)}). Reload the page to try again.</div>`; });
+if (window.claude && window.claude.use) window.claude.use('downloads').then(d => { downloads = d; }).catch(() => {});
+
+document.querySelectorAll('.unitsw button').forEach(b => {
+  b.setAttribute('aria-pressed', String(b.dataset.u === UNITS));
+  b.addEventListener('click', () => {
+    UNITS = b.dataset.u;
+    try { localStorage.setItem('gw-units', UNITS); } catch (e) {}
+    document.querySelectorAll('.unitsw button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.u === UNITS)));
+    renderAll(); if (countyPaths) paint(); if (selected) renderCounty(byF.get(selected));
+  });
+});
+
+function renderAll() { renderFresh(); renderLedger(); renderTypes(); renderUpdates(); renderMethods(); }
+
+// ---------- freshness ----------
+function nextRun(fromIso) {
+  const d = new Date(fromIso + 'T00:00:00Z');
+  let n = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 3, 9, 17));
+  if (n <= d) n = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 3, 9, 17));
+  return n;
+}
+const longDate = d => d.toLocaleDateString('en-US', {year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC'});
+function renderFresh() {
+  const built = META.built, nb = nextRun(built);
+  const ageDays = Math.floor((Date.now() - new Date(built + 'T00:00:00Z')) / 864e5);
+  const overdue = ageDays > 40;
+  $('#ver').textContent = META.version;
+  $('#fresh').innerHTML = `<span class="eyebrow">Data status</span>
+    <span><i class="dotlive" style="${overdue ? 'background:var(--warn)' : ''}"></i>Built <b>${longDate(new Date(built + 'T00:00:00Z'))}</b></span>
+    <span>Registries refresh monthly; next scheduled run <b>${longDate(nb)}</b>${overdue ? ' (this copy is older than one refresh cycle)' : ''}</span>
+    ${META.public_url ? `<span>Live version: <a href="${esc(META.public_url)}">${esc(META.public_url.replace(/^https?:\/\//, ''))}</a></span>` : ''}`;
+}
+
+// ---------- ledger ----------
+function renderLedger() {
+  const i = STATS.inv, ch = STATS.changes || {};
+  const items = [
+    [fmt(i.n), `abandoned wells in one inventory across ${i.states} states (${STATS.registry_states.length} full state registries plus documented orphaned wells)`],
+    [fmt(i.vd_n), `with a vertical total depth on record, so temperature can be estimated at the well's own bottom`],
+    [fmt(i.by_fit.A), `best-fit wells: inactive, unplugged, with an operator, and ${T(150)} or hotter at total depth`],
+    [fmt(i.by_fit.A + i.by_fit.B + (i.matrix.PA.egs) + (i.matrix.DA.egs)), `wells of any type already at EGS grade, ${T(150)} or more, at total depth`],
+    [ch.baseline ? 'Baseline' : fmt(ch.added_n || 0), ch.baseline ? 'first build with change tracking; wells newly listed as abandoned appear here from the next monthly run' : 'wells joined the inventory since the previous monthly refresh'],
+  ];
+  $('#ledger').innerHTML = items.map(([b, t]) => `<div><b class="num">${b}</b><span>${t}</span></div>`).join('');
+  $('#footStats').textContent = `${fmt(STATS.counties)} counties · ${fmt(STATS.places.incorporated)} incorporated places · ${fmt(STATS.plants.operable)} operable power plants`;
+}
+
+// ---------- the four abandonment types ----------
+const TYPE_TEXT = {
+  IN: {rank: '1 · Best access', what: 'Temporarily abandoned, idle or shut-in. Casing and wellhead are still in place and a company of record can sell or lease the well.',
+       bar: ['Casing and cement condition unknown until the well is logged and pressure-tested', 'Ordinary Portland cement loses strength above 230 °F (110 °C) unless silica-stabilised', 'Plugging deadlines shorten the window: from Sept. 2027 Texas allows no routine extension for wells inactive over 15 years and completed over 25 years ago']},
+  OR: {rank: '2 · Transfer first', what: 'An abandoned well with no operator able to plug it, now in the state\'s custody. Mostly old and poorly documented.',
+       bar: ['Federal orphan-well grants (42 U.S.C. §15907) pay to plug and reclaim, not to repurpose', 'A new owner needs a state transfer route: New Mexico enacted one in 2025; Oklahoma\'s 2026 bill passed the House, with no Senate vote recorded', 'The USGS inventory lists no depth for these wells, so most cannot be graded at depth']},
+  PA: {rank: '3 · Re-entry', what: 'Cement plugs set and surface casing cut below ground. Records (depth, logs) usually survive.',
+       bar: ['Plugs must be drilled out and the well re-permitted before any reuse', 'Production casing may have been pulled when the well was plugged', 'Re-opening can re-create the leak path the plug was set to close']},
+  DA: {rank: '4 · Data well', what: 'Drilled and logged, never produced; usually plugged in open hole below the surface casing.',
+       bar: ['Often no production casing was run, so reuse is close to redrilling', 'Its logs and bottom-hole temperatures still locate hot rock for a new EGS well', 'Lowest wellbore value, highest information value']},
+};
+function renderTypes() {
+  const i = STATS.inv, cl = STATS.cls;
+  $('#tcards').innerHTML = TYPES.map(k => {
+    const t = TYPE_TEXT[k], c = cl[k], m = i.matrix[k];
+    return `<article class="tcard" style="--c:${TCOL[k]}">
+      <div class="rank"><b>${t.rank}</b><span>${k}</span></div>
+      <h3>${TNAME[k]}</h3>
+      <div class="big num">${fmt(c.n)} <small>wells</small></div>
+      <p class="note">${t.what}</p>
+      <ul>${t.bar.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <div class="egs">At EGS grade at total depth: <b>${fmt(m.egs)}</b> · 248–302 °F: <b>${fmt(m.near)}</b><br>Vertical depth on record: <b>${fmt(c.vd_n)}</b> (${Math.round(100 * c.vd_n / c.n)}%) · median ${c.td_q ? Dft(c.td_q[2]) : '—'}</div>
+    </article>`;
+  }).join('');
+  $('#nmatrix').innerHTML = matrixTable(i.matrix, true);
+  const v = STATS.qa.thermal.validation.ge_2500m.gridwell_depth_matched;
+  $('#nmatrixNote').innerHTML = `Cells count wells. EGS grade starts at ${T(150)}, the lower bound of the EGS temperature range. Temperatures are model estimates: checked against ${fmt(STATS.qa.thermal.validation.ge_2500m.held_out)} held-out bottom-hole measurements deeper than ${Dm(2500)}, the median error is ${pairDelta(v.median_abs_c)} and 90% fall within ${pairDelta(v.p90_abs_c)}.`;
+}
+const pairDelta = c => pair(`${n0(c * 1.8)} °F`, `${n1(c)} °C`);
+function matrixTable(M, national) {
+  const tot = g => TYPES.reduce((a, k) => a + (M[k] ? M[k][g] : 0), 0);
+  const lab = g => UNITS === 'field' ? GRADES.find(x => x[0] === g)[1] : GRADES_SI[g];
+  return `<table class="mtab"><thead><tr><th>Abandonment type</th>${GRADES.map(([g]) => `<th>${lab(g)}</th>`).join('')}<th>All</th></tr></thead><tbody>
+    ${TYPES.map(k => { const r = M[k] || {}; const all = GRADES.reduce((a, [g]) => a + (r[g] || 0), 0);
+      return `<tr><td><i class="dot" style="background:${TCOL[k]}"></i>${TNAME[k]}</td>${GRADES.map(([g]) => `<td style="${g === 'egs' && r[g] ? 'font-weight:600;color:var(--heat-5)' : ''}">${fmt(r[g] || 0)}</td>`).join('')}<td>${fmt(all)}</td></tr>`; }).join('')}
+    <tr><td><b>All types</b></td>${GRADES.map(([g]) => `<td><b>${fmt(tot(g))}</b></td>`).join('')}<td><b>${fmt(GRADES.reduce((a, [g]) => a + tot(g), 0))}</b></td></tr>
+  </tbody></table>`;
+}
+
+// ---------- map ----------
+let path, countyPaths;
+function decodeArcs(t) {
+  const [kx, ky] = t.transform.scale, [tx, ty] = t.transform.translate;
+  return t.arcs.map(arc => { let x = 0, y = 0; return arc.map(([dx, dy]) => { x += dx; y += dy; return [x * kx + tx, y * ky + ty]; }); });
+}
+function ringCoords(arcs, ring) {
+  const out = [];
+  ring.forEach((a, i) => { const seg = a >= 0 ? arcs[a] : arcs[~a].slice().reverse(); (i ? seg.slice(1) : seg).forEach(p => out.push(p)); });
+  return out;
+}
+function drawMap() {
+  const svg = d3.select('#map');
+  const arcs = decodeArcs(topo);
+  const features = topo.objects.counties.geometries.map(g => ({type: 'Feature', id: g.id, geometry: {type: 'MultiPolygon', coordinates: g.arcs.map(poly => poly.map(ring => ringCoords(arcs, ring)))}}));
+  const proj = d3.geoAlbersUsa().fitExtent([[8, 8], [967, 602]], {type: 'FeatureCollection', features});
+  path = d3.geoPath(proj);
+  const defs = svg.append('defs');
+  const pat = defs.append('pattern').attr('id', 'hatch').attr('patternUnits', 'userSpaceOnUse').attr('width', 5).attr('height', 5).attr('patternTransform', 'rotate(45)');
+  pat.append('rect').attr('width', 5).attr('height', 5).style('fill', 'var(--seq-0)');
+  pat.append('line').attr('x1', 0).attr('y1', 0).attr('x2', 0).attr('y2', 5).style('stroke', 'var(--rule-strong)').attr('stroke-width', 1.2);
+  const g = svg.append('g');
+  countyPaths = g.selectAll('path.c').data(features.filter(f => path(f))).join('path').attr('class', 'c').attr('d', path).attr('id', d => 'm' + d.id)
+    .on('mousemove', (ev, d) => showTip(ev, d.id)).on('mouseleave', () => { $('#tip').hidden = true; })
+    .on('click', (ev, d) => select(d.id, true));
+  svg.append('path').attr('class', 'st').attr('d', path({type: 'MultiLineString', coordinates: topo.objects.state_borders.arcs.map(a => arcs[a[0]])}));
+  paint();
+  document.querySelectorAll('.chip[data-l]').forEach(b => b.addEventListener('click', () => {
+    layer = b.dataset.l; document.querySelectorAll('.chip[data-l]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); paint();
+  }));
+}
+const BINS = [1, 10, 100, 1000, 5000, 20000];
+function seqFill(n) { if (!n) return 'var(--seq-0)'; let i = 0; while (i < BINS.length && n >= BINS[i]) i++; return `var(--seq-${Math.max(1, Math.min(6, i))})`; }
+const EGS_BINS = [1, 5, 25, 100, 400];
+function egsN(w) { return w ? w.fit.A + w.fit.B + w.fit.C + w.fit.D : 0; }
+function heatFill(n) { if (!n) return 'var(--seq-0)'; let i = 0; while (i < EGS_BINS.length && n >= EGS_BINS[i]) i++; return `var(--heat-${Math.max(1, Math.min(5, i))})`; }
+const T10_BINS_C = [90, 105, 120, 135, 150];
+function t10Fill(c) { if (c == null) return 'var(--seq-0)'; let i = 0; while (i < T10_BINS_C.length && c >= T10_BINS_C[i]) i++; return i === 0 ? 'var(--seq-1)' : `var(--heat-${i})`; }
+function fillFor(r) {
+  if (!r) return 'var(--seq-0)';
+  const w = r.w;
+  if (layer === 'all') return w ? (r.cov === 'DOW' ? seqFill(w.n) : seqFill(w.n)) : (r.cov ? 'var(--seq-0)' : 'url(#hatch)');
+  if (layer === 'egs') return r.cov === 'registry' ? heatFill(egsN(w)) : 'url(#hatch)';
+  if (layer === 't10') return w && w.t10 ? t10Fill(w.t10[2]) : 'url(#hatch)';
+  if (r.ec && r.ec.y26 === 1) return 'var(--ec-map)';
+  if (r.cc && r.cc.cc > 0) return 'var(--ec-map-cc)';
+  return 'var(--seq-0)';
+}
+function paint() {
+  countyPaths.style('fill', d => fillFor(byF.get(d.id)));
+  const lg = $('#legend');
+  const hatch = '<span><span class="sw" style="background:repeating-linear-gradient(45deg,var(--seq-0) 0 3px,var(--rule-strong) 3px 4px)"></span>';
+  if (layer === 'all') {
+    lg.innerHTML = `<span><span class="sw" style="background:var(--seq-0)"></span>None on record</span><span style="display:flex;align-items:center;gap:6px">1 <span class="ramp">${[1, 2, 3, 4, 5, 6].map(i => `<i style="background:var(--seq-${i})"></i>`).join('')}</span> 20,000+ wells</span>${hatch}No well data yet</span>`;
+    $('#mapnote').textContent = `Abandoned wells of all four types per county. Full registries: ${STATS.registry_states.join(', ')}. In the other ${STATS.dow_states.length} states only documented orphaned wells (USGS, 2022) are counted until their registries are added.`;
+  } else if (layer === 'egs') {
+    lg.innerHTML = `<span><span class="sw" style="background:var(--seq-0)"></span>None</span><span style="display:flex;align-items:center;gap:6px">1 <span class="ramp">${[1, 2, 3, 4, 5].map(i => `<i style="background:var(--heat-${i})"></i>`).join('')}</span> 400+ wells</span>${hatch}No total depths published</span>`;
+    $('#mapnote').innerHTML = `Wells rated A–D: at least ${T(120)} at their own vertical depth. Only registries that publish depth can be graded (${STATS.inv.vd_states.join(', ')}).`;
+  } else if (layer === 't10') {
+    const labs = ['< 194 °F', '194', '221', '248', '275', '302 °F +'];
+    lg.innerHTML = `<span style="display:flex;align-items:center;gap:6px"><span class="ramp"><i style="background:var(--seq-1)"></i>${[1, 2, 3, 4, 5].map(i => `<i style="background:var(--heat-${i})"></i>`).join('')}</span> ${UNITS === 'field' ? '194 → 302 °F' : '90 → 150 °C'}</span>${hatch}No wells to estimate at</span>`;
+    $('#mapnote').innerHTML = `Median modelled rock temperature at ${Dft(10000)} under the county's abandoned wells: what a well deepened to that depth would meet.`;
+  } else {
+    lg.innerHTML = `<span><span class="sw" style="background:var(--ec-map)"></span>Energy community, whole county</span><span><span class="sw" style="background:var(--ec-map-cc)"></span>Coal-closure tracts only</span><span><span class="sw" style="background:var(--seq-0)"></span>Neither</span>`;
+    $('#mapnote').textContent = 'Status from IRS Notice 2026-39 (in force from 10 June 2026) and the cumulative coal-closure tract list. Brownfield sites qualify separately and are not mapped.';
+  }
+}
+function showTip(ev, f) {
+  const r = byF.get(f); if (!r) return;
+  const w = r.w; let v;
+  if (layer === 'all') v = w ? `${fmt(w.n)} abandoned wells` : (r.cov ? 'None on record' : 'No well data yet');
+  else if (layer === 'egs') v = r.cov !== 'registry' ? 'No total depths published' : `${fmt(egsN(w))} wells rated A–D${w && w.fit.A ? ` (${fmt(w.fit.A)} best fit)` : ''}`;
+  else if (layer === 't10') v = w && w.t10 ? `Median at 10,000 ft: ${T(w.t10[2])}` : 'No wells to estimate at';
+  else v = r.ec && r.ec.y26 ? 'Energy community, 2026' : (r.cc && r.cc.cc ? `${r.cc.cc} coal-closure tracts` : 'Not an energy community');
+  const t = $('#tip'); t.innerHTML = `<b>${esc(r.n)}, ${r.st}</b><br>${v}`; t.hidden = false;
+  t.style.left = Math.min(ev.clientX + 14, innerWidth - 290) + 'px'; t.style.top = (ev.clientY + 14) + 'px';
+}
+
+// ---------- search ----------
+const q = $('#q'), sugg = $('#sugg');
+let hits = [], hi = -1;
+const norm = s => s.toLowerCase().replace(/\b(county|parish|borough|census area|city and borough|municipio|planning region)\b/g, '').replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ').trim();
+q.addEventListener('input', () => {
+  const v = norm(q.value); hi = -1;
+  if (!v) { sugg.hidden = true; return; }
+  const parts = v.split(' '), last = parts[parts.length - 1], stHint = last.length === 2 ? last : null;
+  hits = C.filter(r => { const nm = norm(r.n) + ' ' + r.st.toLowerCase() + ' ' + r.s.toLowerCase();
+    return parts.every(p => nm.includes(p)) || (stHint && r.st.toLowerCase() === stHint && parts.slice(0, -1).every(p => norm(r.n).includes(p))); })
+    .sort((a, b) => (b.w ? b.w.n : 0) - (a.w ? a.w.n : 0)).slice(0, 12);
+  sugg.innerHTML = hits.map((r, i) => `<li role="option" id="o${i}" data-f="${r.f}"><span>${esc(r.n)}, ${r.st}</span><small>${r.w ? fmt(r.w.n) + ' wells' : r.f}</small></li>`).join('') || '<li aria-disabled="true">No county matches</li>';
+  sugg.hidden = false;
+});
+q.addEventListener('keydown', e => {
+  if (sugg.hidden) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); hi = Math.max(0, Math.min(hits.length - 1, hi + (e.key === 'ArrowDown' ? 1 : -1))); [...sugg.children].forEach((li, i) => li.setAttribute('aria-selected', String(i === hi))); }
+  else if (e.key === 'Enter') { const r = hits[Math.max(0, hi)]; if (r) { select(r.f, true); sugg.hidden = true; q.blur(); } }
+  else if (e.key === 'Escape') sugg.hidden = true;
+});
+sugg.addEventListener('mousedown', e => { const li = e.target.closest('li[data-f]'); if (li) { select(li.dataset.f, true); sugg.hidden = true; q.value = ''; } });
+q.addEventListener('blur', () => setTimeout(() => { sugg.hidden = true; }, 150));
+
+function select(f, scroll) {
+  selected = f;
+  countyPaths && countyPaths.classed('sel', d => d.id === f);
+  const el = document.getElementById('m' + f); if (el) el.parentNode.appendChild(el);
+  try { history.replaceState(null, '', '#c' + f); } catch (e) {}
+  renderCounty(byF.get(f));
+  if (scroll && innerWidth < 1080) $('#dossier').scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+
+// ---------- county file ----------
+const pill = (cls, html) => `<span class="pill ${cls}">${html}</span>`;
+function renderCounty(r) {
+  if (!r) return;
+  const w = r.w, e = r.ec, p = [];
+  if (w && w.fit.A) p.push(pill('hot', `${fmt(w.fit.A)} best-fit well${w.fit.A > 1 ? 's' : ''}`));
+  if (w) p.push(pill('acc', `${fmt(w.n)} abandoned wells`));
+  if (w && w.new) p.push(pill('yes', `${fmt(w.new)} new since last refresh`));
+  if (r.cov === 'DOW') p.push(pill('warn', `${esc(r.s)} registry not loaded: orphaned wells only`));
+  if (!r.cov) p.push(pill('warn', 'No well data for this state yet'));
+  if (e && e.y26 === 1) p.push(pill('yes', CHECK + 'Energy community, 2026'));
+  else if (e) p.push(pill('no', CROSS + 'Not a county-wide energy community, 2026'));
+  if (r.cc && r.cc.cc) p.push(pill('yes', `${CHECK}${r.cc.cc} coal-closure tract${r.cc.cc > 1 ? 's' : ''}`));
+  $('#dossier').innerHTML = `
+    <section class="panel dhead">
+      <div class="eyebrow">County well file</div>
+      <div class="row"><h2>${esc(r.n)}, ${esc(r.s)}</h2><span class="fips">FIPS ${r.f} · ${Area(r.km2)} land</span></div>
+      <div class="pills">${p.join('')}</div>
+    </section>
+    ${typesSection(r)}${egsSection(r)}${thermalSection(r)}${gridSection(r)}${taxSection(r)}
+    <section class="panel sec cands" id="candSec"><header><h3>Wells to take forward</h3><span class="src">Best EGS fit first, then hottest at total depth</span></header><div id="cand"><p class="note muted">Loading wells…</p></div></section>`;
+  drawClassBar(r); drawTdHist(r); drawThermal(r); drawDist(r);
+  if (CAND) renderCandidates(r);
+  const b = $('#ccToggle'); if (b) b.addEventListener('click', () => { const l = $('#ccList'); l.hidden = !l.hidden; b.textContent = l.hidden ? 'Show tracts' : 'Hide tracts'; });
+}
+
+function typesSection(r) {
+  const w = r.w;
+  const head = `<header><h3>Abandoned wells by type</h3><span class="src">${r.cov === 'registry' ? 'State registry + USGS orphaned-well list' : r.cov === 'DOW' ? 'USGS documented orphaned wells (2022)' : ''}</span></header>`;
+  if (!w) return `<section class="panel sec types-c">${head}<p class="empty">${r.cov ? `The ${esc(r.s)} sources list no plugged, dry, inactive or orphaned oil and gas wells in this county.` : `No well data for ${esc(r.s)} yet. More state registries are added as they are processed.`}</p></section>`;
+  return `<section class="panel sec types-c">${head}
+    <div><div class="clsbar" id="clsbar"></div><div class="clskey" id="clskey" style="margin-top:8px"></div></div>
+    <div class="kv">
+      <div><span class="k">Vertical depth on record</span><span class="v num">${fmt(w.vd_n)} <small>of ${fmt(w.n)}</small></span></div>
+      <div><span class="k">Median vertical depth</span><span class="v num">${w.td ? Dbig_ft(w.td[2]) : '—'}</span></div>
+      <div><span class="k">Flagged orphaned (any type)</span><span class="v num">${fmt(w.orf)}</span></div>
+      <div><span class="k">Plugged with public funds</span><span class="v num">${fmt(w.pub)}</span></div>
+    </div>
+    ${w.dev ? `<p class="note">${fmt(w.dev)} well${w.dev > 1 ? 's report' : ' reports'} only measured depth on a record that looks horizontal or deviated; ${w.dev > 1 ? 'they are' : 'it is'} not graded at total depth, because measured depth along a lateral overstates vertical depth.</p>` : ''}
+    ${w.orp ? `<p class="note">${fmt(w.orp)} once-orphaned well${w.orp > 1 ? 's have' : ' has'} since been plugged and ${w.orp > 1 ? 'are' : 'is'} counted as plugged.</p>` : ''}
+    ${r.cov === 'DOW' ? `<p class="note muted">${esc(r.s)} does not yet have a state registry in GRIDWELL, so only its documented orphaned wells are shown, and the USGS list carries no depths.</p>` : ''}
+  </section>`;
+}
+
+function egsSection(r) {
+  const w = r.w;
+  const head = `<header><h3>EGS screen</h3><span class="src">Type × temperature at each well's own vertical depth</span></header>`;
+  if (!w) return '';
+  const tot = w.n, labels = STATS.fit_labels;
+  const rows = FITS.map(f => `<div class="fitrow"><span class="tag" style="background:${FCOL[f]};color:${FINK[f]}">${f}</span>
+      <div class="lab">${esc(labels[f])}<div class="bar"><i style="width:${tot ? (100 * w.fit[f] / tot).toFixed(2) : 0}%;background:${FCOL[f]}"></i></div></div>
+      <span class="n">${fmt(w.fit[f])}<small>${w.fitg[f] ? fmt(w.fitg[f]) + ' near grid' : '&nbsp;'}</small></span></div>`).join('');
+  return `<section class="panel sec egs">${head}
+    <div class="fitrows">${rows}</div>
+    <p class="note muted">"Near grid" means within ${Km(10)} of a power plant that ties in at 69 kV or more. Ratings use the modelled temperature, which carries an error of about ${pairDelta(STATS.qa.thermal.validation.ge_2500m.gridwell_depth_matched.median_abs_c)} (median) at these depths, so a well rated just above or below a threshold should be checked against its own logs.</p>
+    ${w.vd_n ? `<div class="matrixwrap">${matrixTable(w.m, false)}</div>
+    <div><div class="eyebrow" style="margin-bottom:6px">Temperature at total depth, wells per 25 °F (≈ 14 °C) bin</div><div id="tdhist"></div></div>` : ''}
+  </section>`;
+}
+
+function thermalSection(r) {
+  const w = r.w;
+  const head = `<header><h3>Temperature log</h3><span class="src">Depth-matched bottom-hole-temperature field</span></header>`;
+  if (!w || !w.t10) return `<section class="panel sec thermal">${head}<p class="empty">No temperature estimate for this county: no wells, or no bottom-hole temperatures within ${Km(75)}.</p></section>`;
+  return `<section class="panel sec thermal">${head}
+    <div class="two"><div><svg class="chart" id="tlog" role="img" aria-label="Rock temperature against depth for this county's wells"></svg>
+      <p class="chartcap">Band: 10th–90th percentile of the county's wells; line: median. Dashed lines: 194, 248 and 302 °F (90, 120, 150 °C).</p></div>
+    <div class="kv" style="align-content:start">
+      <div><span class="k">At ${Dft(5000)}</span><span class="v num">${Tbig(w.t5[2])}</span></div>
+      <div><span class="k">At ${Dft(10000)}</span><span class="v num">${Tbig(w.t10[2])}</span></div>
+      <div><span class="k">At ${Dft(15000)}</span><span class="v num">${Tbig(w.t15[2])}</span></div>
+      <div><span class="k">Depth to ${T(150)} (median)</span><span class="v num">${w.zegs ? Dbig_m(w.zegs[2]) : '—'}</span></div>
+      <div><span class="k">Median gradient</span><span class="v num">${w.g ? Gbig(w.g[2]) : '—'}</span></div>
+      <div><span class="k">Nearest measurement (median)</span><span class="v num">${w.gkm != null ? Kmbig(w.gkm) : '—'}</span></div>
+    </div></div>
+    <p class="note muted">This is formation temperature before any heat loss. Leaky cement, micro-annuli or open fractures around an old wellbore lower what a repurposed well delivers; sealing those paths is the subject of the reservoir-simulation work this screen feeds.</p>
+  </section>`;
+}
+
+function gridSection(r) {
+  const w = r.w;
+  const head = `<header><h3>Grid tie-in and nearest load</h3><span class="src">EIA-860 (2025) · Census (2025)</span></header>`;
+  if (!w) return '';
+  return `<section class="panel sec grid">${head}
+    <div class="kv">
+      <div><span class="k">Median to a ≥ 69 kV interconnection</span><span class="v num">${w.pl69 ? Kmbig(w.pl69[2]) : '—'}</span></div>
+      <div><span class="k">Wells within ${Km(10)} of one</span><span class="v num">${fmt(w.w69)} <small>of ${fmt(w.n)}</small></span></div>
+      <div><span class="k">Median to a town of 10,000+</span><span class="v num">${w.load10k ? Kmbig(w.load10k[2]) : '—'}</span></div>
+    </div>
+    <div><div class="eyebrow" style="margin-bottom:6px">Distance from the county's wells, 10th–90th percentile</div><div id="dist"></div></div>
+    <p class="note muted">A plant's reported grid voltage marks where generation already ties into the transmission or distribution system. Substations are usually closer, but no current federal open layer publishes them.</p>
+  </section>`;
+}
+
+function taxSection(r) {
+  const e = r.ec;
+  if (!e) return `<section class="panel sec tax"><header><h3>Energy-community bonus</h3></header><p class="empty">This county is not in Treasury's county list.</p></section>`;
+  const yr = (y, lab) => { const v = e[y]; return `<div class="${v === 1 ? 'y' : v == null ? 'na' : ''}"><span>${lab}</span><b>${v === 1 ? 'Qualifies' : v == null ? 'n/a' : 'No'}</b></div>`; };
+  const cc = r.cc || {tr: 0, cc: 0, list: []};
+  const lead = e.y26 === 1 ? 'Every site in this county is in an energy community while IRS Notice 2026-39 is in force.'
+    : cc.cc ? `The county as a whole does not qualify for 2026, but ${cc.cc} of its ${cc.tr} census tracts qualify under the coal-closure category.`
+    : 'No part of this county qualifies under the statistical-area or coal-closure categories; a specific well pad can still qualify on a brownfield site.';
+  return `<section class="panel sec tax"><header><h3>Energy-community bonus (§45Y / §48E)</h3><span class="src">Treasury · IRS Notice 2026-39</span></header>
+    <p class="note">${lead}</p>
+    <div class="hist" aria-label="Statistical-area status by year">${yr('y23', 'From Jun 2023')}${yr('y24', 'From Jun 2024')}${yr('y25', 'From Jun 2025')}${yr('y26', 'From Jun 2026')}</div>
+    <div class="kv">
+      <div><span class="k">Fossil-fuel employment test</span><span class="v" style="font-size:16px">${(e.ffe1 || e.ffe2) ? 'Meets' : 'Does not meet'} <small>0.17% threshold</small></span></div>
+      <div><span class="k">Coal-closure tracts</span><span class="v num">${fmt(cc.cc)} <small>of ${fmt(cc.tr)}</small></span></div>
+      <div><span class="k">2025 unemployment</span><span class="v num">${e.ur2 != null ? e.ur2.toFixed(2) + '%' : '—'} <small>national ${e.urn.toFixed(2)}%</small></span></div>
+    </div>
+    ${cc.cc ? `<div class="btns"><button class="btn ghost" id="ccToggle" type="button">Show tracts</button></div><div id="ccList" hidden><div class="tscroll" style="max-height:220px"><table><thead><tr><th>Census tract</th><th>Basis</th><th>Eligible from</th></tr></thead><tbody>${cc.list.map(t => `<tr><td class="mono">${t[0]}</td><td>${esc(t[1])}</td><td>${esc(t[2])}</td></tr>`).join('')}</tbody></table></div></div>` : ''}
+    <p class="note muted">An energy-community site raises the §45Y production credit by 10%, or the §48E investment credit by 10 percentage points with prevailing-wage and apprenticeship rules met. Screening information, not tax advice.</p>
+  </section>`;
+}
+
+// ---------- charts ----------
+function drawClassBar(r) {
+  const w = r.w; if (!w || !$('#clsbar')) return;
+  $('#clsbar').innerHTML = TYPES.filter(k => w.c[k]).map(k => `<i style="flex:${w.c[k]};background:${TCOL[k]}" title="${TNAME[k]}: ${fmt(w.c[k])}"></i>`).join('');
+  $('#clskey').innerHTML = TYPES.map(k => `<span><i class="dot" style="background:${TCOL[k]}"></i>${TNAME[k]} <b>${fmt(w.c[k] || 0)}</b></span>`).join('');
+}
+function barHist(el, counts, labels, color, label) {
+  if (!el) return;
+  const W = 520, H = 128, m = {l: 34, r: 6, t: 8, b: 24};
+  const n = counts.length, bw = (W - m.l - m.r) / n, max = Math.max(1, ...counts);
+  const y = v => m.t + (H - m.t - m.b) * (1 - v / max);
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}">`;
+  d3.ticks(0, max, 3).filter(Number.isInteger).forEach(t => { s += `<line class="gridl" x1="${m.l}" x2="${W - m.r}" y1="${y(t)}" y2="${y(t)}"/><text x="${m.l - 6}" y="${y(t) + 3.5}" text-anchor="end">${fmt(t)}</text>`; });
+  counts.forEach((v, i) => { if (v > 0) s += `<rect x="${m.l + i * bw + 1}" y="${y(v)}" width="${Math.max(1, bw - 2)}" height="${Math.max(1, H - m.b - y(v))}" rx="2" style="fill:${color(i)}"><title>${labels[i]}: ${fmt(v)} wells</title></rect>`; });
+  s += `<line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}"/>`;
+  labels.forEach((l, i) => { if (i % 2 === 0) s += `<text x="${m.l + i * bw}" y="${H - 8}" text-anchor="middle">${l}</text>`; });
+  el.innerHTML = s + '</svg>';
+}
+function heatVarF(f) { return f >= 302 ? 'var(--heat-5)' : f >= 248 ? 'var(--heat-4)' : f >= 194 ? 'var(--heat-3)' : f >= 140 ? 'var(--heat-2)' : 'var(--heat-1)'; }
+function drawTdHist(r) {
+  const el = $('#tdhist'); if (!el || !r.w) return;
+  const bins = STATS.units.f_bins, hist = TYPES.reduce((acc, k) => { const h = r.w.cl[k] && r.w.cl[k].hist; if (h) h.forEach((v, i) => acc[i] += v); return acc; }, new Array(bins.length - 1).fill(0));
+  const labs = bins.slice(0, -1).map(f => UNITS === 'field' ? `${f}` : `${Math.round((f - 32) / 1.8)}`);
+  barHist(el, hist, labs.map((l, i) => i === labs.length - 1 ? l + '+' : l), i => heatVarF(bins[i]), 'Temperature at total depth');
+  el.insertAdjacentHTML('beforeend', `<p class="chartcap">${UNITS === 'field' ? '°F, bin start (25 °F bins)' : '°C, bin start (25 °F bins)'}</p>`);
+}
+function drawThermal(r) {
+  const el = $('#tlog'); if (!el) return;
+  const w = r.w;
+  const W = 390, H = 326, m = {l: 64, r: 14, t: 44, b: 34};
+  const zmaxFt = 15000, zmaxM = zmaxFt * 0.3048;
+  const pts = [[0, [SURF_C, SURF_C, SURF_C, SURF_C, SURF_C]], [5000, w.t5], [10000, w.t10], [15000, w.t15]];
+  const tmaxF = Math.max(350, Math.ceil(cToF(w.t15[4]) / 50) * 50);
+  const xF = f => m.l + (W - m.l - m.r) * (f - 50) / (tmaxF - 50);
+  const x = c => xF(cToF(c));
+  const y = ft => m.t + (H - m.t - m.b) * ft / zmaxFt;
+  let s = '';
+  for (let f = 50; f <= tmaxF; f += 50) s += `<line class="gridl" x1="${xF(f)}" x2="${xF(f)}" y1="${m.t}" y2="${H - m.b}"/><text x="${xF(f)}" y="${m.t - 16}" text-anchor="middle">${UNITS === 'field' ? f : Math.round((f - 32) / 1.8)}</text><text x="${xF(f)}" y="${m.t - 5}" text-anchor="middle" style="font-size:9px">${UNITS === 'field' ? Math.round((f - 32) / 1.8) : f}</text>`;
+  for (let z = 0; z <= zmaxFt; z += 2500) s += `<line class="gridl" x1="${m.l}" x2="${W - m.r}" y1="${y(z)}" y2="${y(z)}"/><text x="${m.l - 6}" y="${y(z) + 3.5}" text-anchor="end">${UNITS === 'field' ? fmt(z) : fmt(Math.round(z * 0.3048))}</text>`;
+  s += `<text class="lbl" x="${m.l}" y="10">${UNITS === 'field' ? 'Temperature, °F (°C below)' : 'Temperature, °C (°F below)'}</text>`;
+  const band = d3.line()(pts.map(([z, q]) => [x(q[4]), y(z)]).concat(pts.slice().reverse().map(([z, q]) => [x(q[0]), y(z)])));
+  s += `<path d="${band}Z" style="fill:var(--heat-2);fill-opacity:.45"/>`;
+  s += `<path d="${d3.line()(pts.map(([z, q]) => [x(q[2]), y(z)]))}" style="fill:none;stroke:var(--heat-4)" stroke-width="2.2"/>`;
+  [194, 248, 302].forEach(f => { s += `<line x1="${xF(f)}" x2="${xF(f)}" y1="${m.t}" y2="${H - m.b}" style="stroke:var(--ink-2)" stroke-dasharray="3 3"/><text class="lbl" x="${xF(f) + 3}" y="${H - m.b - 5}">${UNITS === 'field' ? f + '°F' : Math.round((f - 32) / 1.8) + '°C'}</text>`; });
+  if (w.td) {
+    const q = w.td.map(v => Math.min(zmaxFt, v));
+    s += `<rect x="8" y="${y(q[1])}" width="9" height="${Math.max(2, y(q[3]) - y(q[1]))}" rx="2" style="fill:var(--c-pa)"><title>Middle half of the county's vertical total depths</title></rect><line x1="5" x2="20" y1="${y(q[2])}" y2="${y(q[2])}" style="stroke:var(--ink)" stroke-width="1.5"><title>Median vertical total depth</title></line>`;
+  }
+  s += `<line class="axis" x1="${m.l}" x2="${m.l}" y1="${m.t}" y2="${H - m.b}"/>`;
+  s += `<text class="lbl" x="${m.l}" y="${H - 10}">Depth, ${UNITS === 'field' ? 'ft' : 'm'}${w.td ? ' · bar at left: middle half of well depths' : ''}</text>`;
+  el.setAttribute('viewBox', `0 0 ${W} ${H}`); el.innerHTML = s;
+}
+function drawDist(r) {
+  const w = r.w, el = $('#dist'); if (!w || !el) return;
+  const k2 = UNITS === 'field' ? 0.621371 : 1, unit = UNITS === 'field' ? 'mi' : 'km';
+  const rows = [['Town of 10,000+', w.load10k], ['Any incorporated place', w.load], ['≥ 69 kV interconnection', w.pl69], ['Any power plant', w.pl]].filter(x => x[1]).map(([l, q]) => [l, q.map(v => v * k2)]);
+  const W = 520, rowH = 26, m = {l: 160, r: 44, t: 6, b: 22}, H = m.t + m.b + rows.length * rowH;
+  const sx = d3.scaleLinear().domain([0, Math.max(10, ...rows.map(x => x[1][4]))]).nice().range([m.l, W - m.r]);
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Distance percentiles">`;
+  sx.ticks(5).forEach(t => { s += `<line class="gridl" x1="${sx(t)}" x2="${sx(t)}" y1="${m.t}" y2="${H - m.b}"/><text x="${sx(t)}" y="${H - 6}" text-anchor="middle">${t}</text>`; });
+  s += `<text x="${W - m.r + 4}" y="${H - 6}">${unit}</text>`;
+  rows.forEach(([lab, qv], i) => {
+    const yy = m.t + i * rowH + rowH / 2;
+    s += `<text class="lbl" x="${m.l - 8}" y="${yy + 3.5}" text-anchor="end" style="font-family:var(--f-body);font-size:11.5px">${lab}</text>`;
+    s += `<line x1="${sx(qv[0])}" x2="${sx(qv[4])}" y1="${yy}" y2="${yy}" style="stroke:var(--rule-strong)" stroke-width="2"/>`;
+    s += `<rect x="${sx(qv[1])}" y="${yy - 6}" width="${Math.max(2, sx(qv[3]) - sx(qv[1]))}" height="12" rx="2" style="fill:var(--accent);fill-opacity:.35"/>`;
+    s += `<circle cx="${sx(qv[2])}" cy="${yy}" r="4.5" style="fill:var(--accent);stroke:var(--surface)" stroke-width="2"><title>${lab}: median ${n1(qv[2])} ${unit}</title></circle>`;
+    s += `<text x="${Math.min(W - 2, sx(qv[4]) + 6)}" y="${yy + 3.5}">${n1(qv[2])}</text>`;
+  });
+  el.innerHTML = s + '</svg>';
+}
+
+// ---------- candidate wells ----------
+let candFit = null;
+function col(name) { return CAND.cols.indexOf(name); }
+function renderCandidates(r) {
+  const box = $('#cand'); if (!box || !r) return;
+  if (!CAND) { box.innerHTML = '<p class="note muted">Loading wells…</p>'; return; }
+  const rows = CAND.rows[r.f] || [];
+  if (!rows.length) { box.innerHTML = '<p class="empty">No wells to list in this county.</p>'; return; }
+  const I = Object.fromEntries(CAND.cols.map((c, i) => [c, i]));
+  const present = FITS.filter(f => rows.some(w => w[I.fit] === f));
+  if (!candFit || !present.includes(candFit)) candFit = present[0];
+  const list = rows.filter(w => w[I.fit] === candFit);
+  const P = CAND.places, Gp = CAND.plants;
+  const plantTxt = i => { const p = Gp[i]; return p ? `${esc(p[0])} (${p[2] != null ? p[2] + ' kV' : 'kV n/a'}, ${esc(p[4])})` : '—'; };
+  const head = `<tr><th></th><th>Fit</th><th>API</th><th>Type</th><th>Status on record</th><th class="n">Vertical depth</th><th class="n">Temp. at total depth</th><th class="n">Deepen to 302 °F</th><th class="n">At 15,000 ft</th><th class="n">To ≥ 69 kV</th><th>Nearest ≥ 69 kV plant</th><th>Operator on record</th></tr>`;
+  const body = list.map((w, i) => `<tr><td><input type="checkbox" aria-label="Select well ${esc(w[I.api] || w[I.key])}" data-k="${esc(w[I.key])}"></td>
+    <td><span class="ftag" style="background:${FCOL[w[I.fit]]};color:${FINK[w[I.fit]]}">${w[I.fit]}</span>${w[I.new] ? '<span class="newtag">new</span>' : ''}</td>
+    <td class="mono">${esc(w[I.api] || '—')}</td><td><i class="dot" style="background:${TCOL[w[I.cls]]}"></i>${TNAME[w[I.cls]]}${w[I.public] ? ' · public plug' : ''}</td>
+    <td>${esc(w[I.status])}</td>
+    <td class="n">${w[I.td_ft] != null && !w[I.dev] ? Dft(w[I.td_ft]) : w[I.dev] ? '<small>MD only, likely deviated</small>' : '—'}</td>
+    <td class="n">${T(w[I.t_td])}</td><td class="n">${w[I.deepen_m] != null ? (w[I.deepen_m] === 0 ? 'already there' : Dm(w[I.deepen_m])) : '—'}</td>
+    <td class="n">${T(w[I.t15k])}</td><td class="n">${Km(w[I.plant69_km])}</td><td>${plantTxt(w[I.plant69_i])}</td><td>${esc(w[I.operator])}</td></tr>`).join('');
+  box.innerHTML = `
+    <div class="tabs" role="tablist">${present.map(f => `<button class="tab" role="tab" aria-selected="${f === candFit}" data-f="${f}" type="button">${f} · ${FSHORT[f]} (${fmt(r.w.fit[f])})</button>`).join('')}</div>
+    <p class="note muted">${esc(STATS.fit_labels[candFit])}. ${list.length < r.w.fit[candFit] ? `Showing the ${list.length} hottest of ${fmt(r.w.fit[candFit])}.` : ''} Select wells to export their temperature–depth profiles as the starting condition for a reservoir or wellbore heat-transfer simulation.</p>
+    <div class="tscroll"><table><thead>${head}</thead><tbody>${body}</tbody></table></div>
+    <div class="btns"><button class="btn" id="seedJson" type="button" disabled>Export simulation seed (JSON)</button><button class="btn ghost" id="seedCsv" type="button" disabled>Export profiles (CSV)</button><span class="toast" id="seedMsg" role="status"></span></div>
+    <textarea class="out" id="seedOut" hidden readonly aria-label="Export text to copy"></textarea>`;
+  box.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => { candFit = b.dataset.f; renderCandidates(r); }));
+  const boxes = [...box.querySelectorAll('tbody input')];
+  const upd = () => { const k = boxes.filter(b => b.checked).length; $('#seedJson').disabled = $('#seedCsv').disabled = !k; $('#seedMsg').textContent = k ? `${k} selected` : ''; };
+  boxes.forEach(b => b.addEventListener('change', upd));
+  const picked = () => { const ks = new Set(boxes.filter(b => b.checked).map(b => b.dataset.k)); return rows.filter(w => ks.has(w[I.key])); };
+  $('#seedJson').addEventListener('click', () => exportSeed(r, picked(), I, 'json'));
+  $('#seedCsv').addEventListener('click', () => exportSeed(r, picked(), I, 'csv'));
+}
+function profile(grad, zmaxM) {
+  const out = []; for (let z = 0; z <= zmaxM + 1e-6; z += 100) { const c = SURF_C + grad * z / 1000; out.push({depth_ft: Math.round(z / 0.3048), depth_m: z, temp_f: Math.round(cToF(c) * 10) / 10, temp_c: Math.round(c * 100) / 100}); }
+  return out;
+}
+function exportSeed(r, wells, I, kind) {
+  const out = wells.map(w => {
+    const vd = w[I.td_ft] != null && !w[I.dev] ? w[I.td_ft] * 0.3048 : null;
+    return {api: w[I.api], key: w[I.key], latitude: w[I.lat], longitude: w[I.lon], abandonment_type: TNAME[w[I.cls]], orphan_flag: !!w[I.orphan],
+      status_on_record: w[I.status], egs_fit: w[I.fit], egs_fit_meaning: STATS.fit_labels[w[I.fit]],
+      vertical_depth_ft: vd ? Math.round(vd / 0.3048) : null, vertical_depth_m: vd ? Math.round(vd) : null,
+      gradient_c_per_km: w[I.grad], gradient_f_per_100ft: w[I.grad] != null ? Math.round(w[I.grad] * 0.054864 * 1000) / 1000 : null,
+      temperature_at_td_f: w[I.t_td] != null ? Math.round(cToF(w[I.t_td]) * 10) / 10 : null, temperature_at_td_c: w[I.t_td],
+      deepening_to_302f_ft: w[I.deepen_m] != null ? Math.round(w[I.deepen_m] / 0.3048) : null, deepening_to_150c_m: w[I.deepen_m],
+      gradient_support: {bht_points: w[I.grad_n], nearest_bht_km: w[I.grad_km], confidence: w[I.conf]},
+      nearest_69kv_mi: w[I.plant69_km] != null ? Math.round(w[I.plant69_km] * 0.621371 * 10) / 10 : null, nearest_69kv_km: w[I.plant69_km],
+      profile: w[I.grad] != null ? profile(w[I.grad], vd || 15000 * 0.3048) : null};
+  });
+  const meta = {tool: 'GRIDWELL Atlas', version: META.version, built: META.built, county: `${r.n}, ${r.s}`, fips: r.f,
+    surface_temperature: {f: 59, c: SURF_C}, model: STATS.qa.thermal.method,
+    validation_ge_2500m: STATS.qa.thermal.validation.ge_2500m.gridwell_depth_matched,
+    caveats: ['Formation temperature before wellbore heat loss.', 'Screening estimate, not a measured log.', 'Profiles run to the vertical total depth, or 15,000 ft (4,572 m) where none is on record.'], wells: out};
+  let text, fname;
+  if (kind === 'json') { text = JSON.stringify(meta, null, 2); fname = `gridwell_seed_${r.f}.json`; }
+  else { const L = ['api,key,egs_fit,depth_ft,depth_m,temp_f,temp_c']; out.forEach(w => (w.profile || []).forEach(p => L.push([w.api || '', w.key, w.egs_fit, p.depth_ft, p.depth_m, p.temp_f, p.temp_c].join(',')))); text = L.join('\n'); fname = `gridwell_profiles_${r.f}.csv`; }
+  const msg = $('#seedMsg'), ta = $('#seedOut');
+  const fallback = () => { ta.value = text; ta.hidden = false; ta.focus(); ta.select(); if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => { msg.textContent = 'Copied to clipboard'; }, () => { msg.textContent = 'Select the text below and copy it'; }); else msg.textContent = 'Select the text below and copy it'; };
+  if (downloads) { downloads.save({filename: fname, data: text}).then(() => { msg.textContent = `Saved ${fname}`; }, e => { if (e && e.code === 'declined') msg.textContent = 'Save cancelled'; else fallback(); }); return; }
+  if (!window.claude) {   // ordinary website (GitHub Pages): a normal download link works
+    try { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], {type: kind === 'json' ? 'application/json' : 'text/csv'})); a.download = fname; document.body.appendChild(a); a.click(); a.remove(); msg.textContent = `Saved ${fname}`; return; } catch (e) {}
+  }
+  fallback();
+}
+
+// ---------- changes ----------
+function renderUpdates() {
+  const ch = CHG || {}, man = META.sources && META.sources.sources;
+  let html = '';
+  if (ch.baseline) html += `<p class="note">${esc(ch.note)} Each monthly run re-downloads the ${STATS.registry_states.length} state registries, rebuilds the inventory, compares it with the previous run's snapshot and lists here the wells that were newly recorded as plugged, dry, temporarily abandoned, idle, shut-in or orphaned, and the wells that changed type.</p>`;
+  else {
+    html += `<div class="kv"><div><span class="k">Joined the inventory</span><span class="v num">${fmt(ch.added_n)}</span></div><div><span class="k">Changed abandonment type</span><span class="v num">${fmt(ch.reclassified_n)}</span></div><div><span class="k">Left the inventory</span><span class="v num">${fmt(ch.removed_n)}</span></div><div><span class="k">EGS rating changed</span><span class="v num">${fmt(ch.fit_changed_n || 0)}</span></div></div>`;
+    const tr = Object.entries(ch.transitions || {}).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k.split('→').map(x => TNAME[x] || x).join(' → ')}: <b class="mono">${fmt(v)}</b>`).join(' · ');
+    if (tr) html += `<p class="note">Type changes: ${tr}</p>`;
+    const by = Object.entries(ch.added_by_state || {}).map(([s, n]) => `${s} ${fmt(n)}`).join(' · ');
+    if (by) html += `<p class="note">New wells by state: ${by}</p>`;
+    if ((ch.added_list || []).length) html += `<div class="tscroll" style="max-height:300px"><table><thead><tr><th>Fit</th><th>State</th><th>County FIPS</th><th>API</th><th>Type</th><th>Status</th><th class="n">Temp. at total depth</th></tr></thead><tbody>${ch.added_list.slice(0, 200).map(x => `<tr><td><span class="ftag" style="background:${FCOL[x[4]]};color:${FINK[x[4]]}">${x[4]}</span></td><td>${x[1]}</td><td class="mono"><a href="#c${x[2]}" data-f="${x[2]}">${x[2] || '—'}</a></td><td class="mono">${esc(x[6])}</td><td>${TNAME[x[3]] || x[3]}</td><td>${esc(x[7])}</td><td class="n">${T(x[5])}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+  if (man) {
+    const regs = SRC.sources.filter(s => s.group === 'registry');
+    html += `<p class="note muted">Registry downloads in this build: ${regs.map(s => { const m = man[s.id] || {}; return `${s.state} ${esc((m.retrieved || '').slice(0, 10))}${m.stale_since ? ' (stale)' : ''}`; }).join(' · ')}.</p>`;
+  }
+  $('#updates').innerHTML = html;
+  $('#updates').querySelectorAll('a[data-f]').forEach(a => a.addEventListener('click', ev => { ev.preventDefault(); select(a.dataset.f, true); }));
+}
+
+// ---------- methods ----------
+function renderMethods() {
+  const s = STATS, i = s.inv, u = s.qa.unify, v = s.qa.thermal.validation, reg = s.qa.registry;
+  const vm = v.ge_2500m;
+  $('#methodCols').innerHTML = `
+    <div><h3>One inventory, four abandonment types</h3><ul>
+      <li>${fmt(u.registry_rows_out)} wells from ${s.registry_states.length} state registries (${s.registry_states.join(', ')}), classed by each agency's own status codes, plus the USGS Documented Unplugged Orphaned Oil and Gas Well list (2022). ${fmt(u.dow_matched_to_registry)} USGS wells matched a registry record by API number (or, in Kansas, by location within ${Dm(100)}) and kept the registry's newer status; ${fmt(u.dow_added_unmatched)} were added.</li>
+      <li>"Orphaned" is a liability status, not a separate population: ${fmt(i.orphan_flag)} wells carry the orphan flag, of which ${fmt(i.orphan_since_plugged)} have since been plugged and are counted as plugged.</li>
+      <li>Counties are the Census 2025 boundaries; where an agency records a county and the coordinates fall in one, they agree for ${(100 * reg.name_point_agreement).toFixed(2)}% of registry wells.</li>
+    </ul></div>
+    <div><h3>Temperature at the well's own depth</h3><ul>
+      <li>${fmt(s.qa.thermal.points_used)} bottom-hole temperatures (Stanford Thermal Earth Model input set) are corrected with the Harrison method and turned into gradients from a 59 °F (15 °C) surface.</li>
+      <li>For a target depth, only measurements taken within ±25% of that depth are used: the 12 nearest within ${Km(75)}, outliers beyond 3 median absolute deviations rejected, inverse-distance weighted with a ${Km(1)} floor.</li>
+      <li>Checked on ${fmt(vm.held_out)} held-out measurements deeper than ${Dm(2500)}: median error ${pairDelta(vm.gridwell_depth_matched.median_abs_c)}, mean ${pairDelta(vm.gridwell_depth_matched.mae_c)}, against ${pairDelta(vm.orphanheat_v0_1_form.mae_c)} for the earlier all-depth method.</li>
+      <li>Only vertical depth is used. ${fmt(i.dev_n)} records that report measured depth on an apparently horizontal or deviated well are not graded at depth.</li>
+    </ul></div>
+    <div><h3>EGS fit</h3><ul>
+      ${FITS.map(f => `<li><span class="ftag" style="background:${FCOL[f]};color:${FINK[f]}">${f}</span> ${esc(s.fit_labels[f])}.</li>`).join('')}
+      <li>${T(150)} is the lower bound of the 150–300 °C range used for EGS resources; Oklahoma's 2026 well-repurposing bill used 250 °F (121 °C) as its geothermal floor.</li>
+    </ul></div>
+    <div><h3>What this screen does not do</h3><ul>
+      <li>It does not test casing or cement integrity, casing diameter, permeability, water rights, mineral or geothermal title, or seismic hazard, any of which can rule a well out. The barriers for each type are documented in the accompanying paper.</li>
+      <li>It does not simulate heat loss through fractures or the cement sheath, or sealing treatments such as biopolymer flooding; it supplies the starting temperature profiles for that work.</li>
+      <li>It does not estimate power output or cost.</li>
+    </ul></div>`;
+  const man = (META.sources && META.sources.sources) || {};
+  const cad = g => g === 'registry' ? 'Monthly' : g === 'reference' ? 'Pinned; new vintage flagged' : g === 'static' ? 'Vendored; release watched' : 'Watched';
+  $('#srcTable tbody').innerHTML = SRC.sources.filter(x => x.group !== 'watch').map(x => {
+    const m = man[x.id] || {};
+    const when = m.retrieved ? m.retrieved.slice(0, 10) + (m.http_last_modified ? ` · server ${esc(m.http_last_modified)}` : '') : (x.vintage ? String(x.vintage) : '');
+    return `<tr><td>${esc(x.layer)}</td><td><a href="${esc(x.landing || x.url)}">${esc(x.publisher)}</a> — ${esc(x.dataset)}</td><td>${when}</td><td>${cad(x.group)}</td><td class="h">${esc(m.sha256 || x.sha256 || '—')}</td></tr>`;
+  }).join('');
+}
+})();
+</script>
