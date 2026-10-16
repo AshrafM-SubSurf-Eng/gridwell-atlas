@@ -1,0 +1,42 @@
+name: Publish version release
+
+# Creates a tagged GitHub release for a new version of the atlas (for example
+# v1.0.0). If the repository is connected to Zenodo, the release is archived
+# there and receives a DOI. Monthly data refreshes publish their own
+# data-YYYY-MM-DD releases from refresh.yml.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version to release, without the leading v (for example 1.0.0)
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the version matches the code and citation file
+        run: |
+          v="${{ inputs.version }}"
+          grep -q "__version__ = '$v'" pipeline/__init__.py || { echo "pipeline/__init__.py is not at $v"; exit 1; }
+          grep -q "^version: $v$" CITATION.cff || { echo "CITATION.cff is not at $v"; exit 1; }
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v="${{ inputs.version }}"
+          printf '%s\n' \
+            "GRIDWELL Atlas $v: a self-updating national screen of abandoned US oil and gas wells for Enhanced Geothermal System repurposing." \
+            "" \
+            "- Live atlas: https://ashrafm-subsurf-eng.github.io/gridwell-atlas/" \
+            "- Code: MIT. Derived data: CC BY 4.0. Inputs keep their own terms (see sources.json and data/reference/README.md)." \
+            "- Cite with CITATION.cff." \
+            "" \
+            "Monthly data refreshes are published separately as data-YYYY-MM-DD releases; see CHANGELOG.md." > notes.md
+          gh release create "v$v" --target "$GITHUB_SHA" --title "GRIDWELL Atlas $v" --notes-file notes.md
