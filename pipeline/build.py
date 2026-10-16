@@ -11,7 +11,7 @@ from __future__ import annotations
 import argparse, json, time
 from datetime import date
 import numpy as np, pandas as pd
-from . import ec, inventory as I
+from . import __version__, ec, inventory as I
 from .counties import load_counties
 from .geo import PolygonIndex
 from .grid import load_plants
@@ -195,7 +195,7 @@ def main(prev_snapshot=None, out_site=True):
                        plants.ba[i] if isinstance(plants.ba[i], str) else ''] for i in sorted(used_plants)}
 
     # ------------------------------------------------ national statistics
-    s = {'generated': date.today().isoformat(), 'version': '0.2.0'}
+    s = {'generated': date.today().isoformat(), 'version': __version__}
     s['counties'] = int(len(counties))
     s['ec2026_counties'] = int((sa.ec2025 == 1).sum())
     s['ec2025_counties'] = int((sa.ec2024 == 1).sum())
@@ -262,7 +262,7 @@ def main(prev_snapshot=None, out_site=True):
                   'f_bins': F_BINS.tolist(), 'surface_t_c': I.SURFACE_T}
     s['changes'] = {k: v for k, v in changes.items() if not k.startswith('_')}
 
-    meta = {'built': date.today().isoformat(), 'version': '0.2.0',
+    meta = {'built': date.today().isoformat(), 'version': __version__,
             'public_url': 'https://ashrafm-subsurf-eng.github.io/gridwell-atlas/',
             'repository': 'https://github.com/AshrafM-SubSurf-Eng/gridwell-atlas',
             'sources': json.loads(MANIFEST.read_text()) if MANIFEST.exists() else None,

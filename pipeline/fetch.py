@@ -22,7 +22,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from .paths import RAW, MANIFEST, SOURCES
 
-UA = 'GRIDWELL-Atlas/0.2 (+https://github.com/AshrafM-SubSurf-Eng/gridwell-atlas; monthly research refresh)'
+UA = 'GRIDWELL-Atlas/1.0 (+https://github.com/AshrafM-SubSurf-Eng/gridwell-atlas; monthly research refresh)'
 TIMEOUT = 300
 # Copies of the pinned reference files kept in the repository (data/reference), so a
 # build never depends on a federal server being up; each is checked against its pin.

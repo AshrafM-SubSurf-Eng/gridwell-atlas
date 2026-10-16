@@ -8,8 +8,8 @@ authors:
     affiliation: Independent Researcher
     orcid: "https://orcid.org/0009-0000-9232-1466"
     email: moshraf1310@gmail.com
-version: 0.2.0
-date-released: 2026-10-13
+version: 1.0.0
+date-released: 2026-10-15
 license: MIT
 repository-code: "https://github.com/AshrafM-SubSurf-Eng/gridwell-atlas"
 url: "https://ashrafm-subsurf-eng.github.io/gridwell-atlas/"

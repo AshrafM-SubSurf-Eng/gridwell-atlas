@@ -75,11 +75,10 @@ p{margin:0}
 .mast .lede{max-width:70ch;color:var(--ink-2);margin-top:12px;font-size:15.5px}
 .byline{font-size:13px;color:var(--muted);margin-top:8px}
 .side{display:grid;gap:10px;justify-items:end;align-self:start}
-.stamp{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1.5px solid var(--warn);color:var(--warn);padding:6px 10px;border-radius:3px;transform:rotate(-2deg);background:var(--warn-soft);max-width:220px;text-align:center;line-height:1.35}
 .fresh{font-size:12.5px;color:var(--ink-2);border:1px solid var(--rule);background:var(--surface);border-radius:5px;padding:8px 10px;max-width:280px;display:grid;gap:2px}
 .fresh b{font-family:var(--f-mono);font-weight:500;color:var(--ink)}
 .fresh .dotlive{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--yes);margin-right:6px;vertical-align:0}
-@media (max-width:720px){.mast{grid-template-columns:1fr}.side{justify-items:start}.stamp{transform:none}}
+@media (max-width:720px){.mast{grid-template-columns:1fr}.side{justify-items:start}}
 
 /* ledger */
 .ledger{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));border:1px solid var(--rule);background:var(--surface);border-radius:var(--r)}
@@ -244,7 +243,6 @@ textarea.out{width:100%;min-height:140px;font:12px/1.4 var(--f-mono);background:
       <p class="byline">Ashraf Mohammed · Independent Researcher · ORCID <a href="https://orcid.org/0009-0000-9232-1466">0009-0000-9232-1466</a> · v<span class="mono" id="ver">—</span></p>
     </div>
     <div class="side">
-      <div class="stamp" role="note">Draft · awaiting author verification</div>
       <div class="fresh" id="fresh" aria-live="polite"><span class="eyebrow">Data status</span><span>Loading…</span></div>
     </div>
   </header>

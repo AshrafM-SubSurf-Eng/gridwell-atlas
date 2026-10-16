@@ -4,7 +4,7 @@
 
 **Live atlas:** https://ashrafm-subsurf-eng.github.io/gridwell-atlas/  
 **Author:** Ashraf Mohammed, Independent Researcher · ORCID [0009-0000-9232-1466](https://orcid.org/0009-0000-9232-1466)  
-**Status:** draft v0.2.0, awaiting author verification. Screening information, not engineering, legal or tax advice.
+**Version:** 1.0.0. Screening information, not engineering, legal or tax advice.
 
 ## What it does
 
