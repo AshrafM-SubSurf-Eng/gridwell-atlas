@@ -1,6 +1,6 @@
 # GRIDWELL Atlas
 
-**Geothermal Repurposing Inventory of Disused Wells** — a self-updating national screen of abandoned oil and gas wells in the United States for repurposing as Enhanced Geothermal System (EGS) wells.
+**Geothermal Repurposing Inventory of Abandoned Wells** — a self-updating national screen of abandoned oil and gas wells in the United States for repurposing as Enhanced Geothermal System (EGS) wells.
 
 **Live atlas:** https://ashrafm-subsurf-eng.github.io/gridwell-atlas/  
 **Author:** Ashraf Mohammed, Independent Researcher · ORCID [0009-0000-9232-1466](https://orcid.org/0009-0000-9232-1466)  

@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use GRIDWELL Atlas, please cite it as below."
-title: "GRIDWELL Atlas: Geothermal Repurposing Inventory of Disused Wells"
+title: "GRIDWELL Atlas: Geothermal Repurposing Inventory of Abandoned Wells"
 abstract: "A self-updating national screen of abandoned oil and gas wells in the United States for repurposing as Enhanced Geothermal System (EGS) wells. One inventory of 948,992 wells from six state registries and the USGS documented orphaned-well dataset, sorted by abandonment type, graded by modelled temperature at each well's own vertical depth, and refreshed monthly."
 authors:
   - family-names: Mohammed

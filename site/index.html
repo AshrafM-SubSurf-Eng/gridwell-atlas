@@ -73,6 +73,7 @@ p{margin:0}
 .word{font-family:var(--f-display);font-weight:800;font-stretch:118%;font-size:clamp(38px,6.4vw,76px);letter-spacing:-.02em;line-height:.9;display:flex;align-items:baseline;gap:.14em;flex-wrap:wrap}
 .word .w2{font-stretch:62%;font-weight:600;color:var(--accent);letter-spacing:0}
 .mast .lede{max-width:70ch;color:var(--ink-2);margin-top:12px;font-size:15.5px}
+.mast .lede.question{color:var(--ink);font-weight:600;font-size:17px}
 .byline{font-size:13px;color:var(--muted);margin-top:8px}
 .side{display:grid;gap:10px;justify-items:end;align-self:start}
 .fresh{font-size:12.5px;color:var(--ink-2);border:1px solid var(--rule);background:var(--surface);border-radius:5px;padding:8px 10px;max-width:280px;display:grid;gap:2px}
@@ -237,9 +238,10 @@ textarea.out{width:100%;min-height:140px;font:12px/1.4 var(--f-mono);background:
 <div class="wrap">
   <header class="mast">
     <div>
-      <div class="eyebrow">Geothermal Repurposing Inventory of Disused Wells</div>
+      <div class="eyebrow">Geothermal Repurposing Inventory of Abandoned Wells</div>
       <div class="word" aria-label="GRIDWELL Atlas"><span>GRIDWELL</span><span class="w2">Atlas</span></div>
-      <p class="lede">Which of America's abandoned oil and gas wells could be turned into Enhanced Geothermal System (EGS) wells? GRIDWELL sorts every inactive or unproductive well by how it was abandoned, estimates the rock temperature at its own depth, and measures how far it sits from a high-voltage grid connection and whether it earns the energy-community tax-credit bonus. Pick any county.</p>
+      <p class="lede question">Which of America's abandoned oil and gas wells could be turned into Enhanced Geothermal System (EGS) wells?</p>
+      <p class="lede">GRIDWELL sorts every inactive or unproductive well by how it was abandoned, estimates the rock temperature at its own depth, and measures how far it sits from a high-voltage grid connection and whether it earns the energy-community tax-credit bonus. Pick any county.</p>
       <p class="byline">Ashraf Mohammed · Independent Researcher · ORCID <a href="https://orcid.org/0009-0000-9232-1466">0009-0000-9232-1466</a> · v<span class="mono" id="ver">—</span></p>
     </div>
     <div class="side">

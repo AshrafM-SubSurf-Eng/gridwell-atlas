@@ -4,7 +4,7 @@ The derived data GRIDWELL publishes (everything under `site/data/` and the
 assets attached to `data-*` releases) is released under the
 [Creative Commons Attribution 4.0 International licence (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
-Cite as: Mohammed, A. (2026). *GRIDWELL Atlas: Geothermal Repurposing Inventory of Disused Wells* (version and
+Cite as: Mohammed, A. (2026). *GRIDWELL Atlas: Geothermal Repurposing Inventory of Abandoned Wells* (version and
 refresh date as shown on the page). https://github.com/AshrafM-SubSurf-Eng/gridwell-atlas
 
 The inputs keep their own terms, listed with links in `sources.json` and on the page:
