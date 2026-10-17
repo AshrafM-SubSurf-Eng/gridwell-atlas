@@ -25,6 +25,18 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      # the per-well lookup index is not kept in git; it ships with each data release
+      - name: Fetch the well index from the latest data release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p build
+          tag=$(gh release list --limit 100 --json tagName --jq '[.[] | select(.tagName | startswith("data-"))][0].tagName // empty')
+          if [ -n "$tag" ] && gh release download "$tag" --pattern wells.tar.gz --dir build --clobber; then
+            tar -xzf build/wells.tar.gz -C site/data && echo "well index from $tag"
+          else
+            echo "no well index published yet"
+          fi
       - run: bash .github/scripts/package_site.sh
       - uses: actions/upload-pages-artifact@v3
         with:

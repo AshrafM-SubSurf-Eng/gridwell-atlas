@@ -80,7 +80,7 @@ def likely_deviated(st: str, basis, td_ft, spud_yr, name, slant=None) -> np.ndar
     return np.zeros(len(td), bool)
 
 
-def _frame(st, api, lat, lon, cls, orphan, public, status, wtype, td, basis, op, county, spud, name=None, slant=None):
+def _frame(st, api, lat, lon, cls, orphan, public, status, wtype, td, basis, op, county, spud, name=None, slant=None, label=None):
     idx = pd.Series(api).index
     td = pd.Series(td, index=idx) if np.isscalar(td) or td is None else pd.Series(td).set_axis(idx)
     td = _num(td).where((_num(td) > 0) & (_num(td) < 35000))
@@ -90,7 +90,9 @@ def _frame(st, api, lat, lon, cls, orphan, public, status, wtype, td, basis, op,
     nm = pd.Series(name).set_axis(idx) if name is not None else pd.Series('', index=idx)
     sl = pd.Series(slant).set_axis(idx) if slant is not None else None
     dev = likely_deviated(st, basis, td, yr, nm, sl)
-    return pd.DataFrame({'state': st, 'api': api, 'lat': _num(lat), 'lon': _num(lon), 'cls': cls,
+    lab = pd.Series(label).set_axis(idx) if label is not None else nm
+    lab = lab.astype('string').fillna('').str.replace(r'\s+', ' ', regex=True).str.strip().replace('', pd.NA)
+    return pd.DataFrame({'state': st, 'api': api, 'well_name': lab, 'lat': _num(lat), 'lon': _num(lon), 'cls': cls,
                          'orphan_list': orphan, 'public_plug': public, 'raw_status': status, 'raw_type': wtype,
                          'td_ft': td, 'depth_basis': basis, 'dev': dev, 'spud_yr': yr,
                          'operator': op, 'county_src': county})
@@ -105,7 +107,7 @@ def ok():
     orphaned or in the state-funded plugging queue; AC+DRY drilled dry, not plugged.
     RBDMS carries no total depth."""
     p = _first('ok/rbdms-wells.csv', 'ok/ok_rbdms_reduced.csv.gz')
-    d = pd.read_csv(p, dtype=str, usecols=lambda c: c in {'API', 'OPERATOR', 'WELLSTATUS', 'WELLTYPE', 'SYMBOL_CLASS', 'SH_LAT', 'SH_LON', 'COUNTY', 'WELL_NAME'})
+    d = pd.read_csv(p, dtype=str, usecols=lambda c: c in {'API', 'OPERATOR', 'WELLSTATUS', 'WELLTYPE', 'SYMBOL_CLASS', 'SH_LAT', 'SH_LON', 'COUNTY', 'WELL_NAME', 'WELL_NUM'})
     s, t = d.WELLSTATUS.fillna('').str.strip(), d.WELLTYPE.fillna('').str.strip()
     d = d[s.isin(OK_KEEP) | ((s == 'AC') & (t == 'DRY'))].copy()
     s, t = d.WELLSTATUS.str.strip(), d.WELLTYPE.fillna('').str.strip()
@@ -117,8 +119,9 @@ def ok():
     cls[(s == 'AC') & (t == 'DRY')] = 'IN'
     orphan = s.isin(['OR', 'STFD', 'SIFORDER', 'SFFO', 'SFAW'])
     public = s.isin(['PASF', 'PAFF', 'PASURSF'])
+    name = (d.WELL_NAME.fillna('') + ' ' + d.get('WELL_NUM', pd.Series('', index=d.index)).fillna('')) if 'WELL_NAME' in d else None
     return _frame('OK', d.API, d.SH_LAT, d.SH_LON, cls, orphan, public, s, t, np.nan, None,
-                  d.OPERATOR, d.COUNTY, None)
+                  d.OPERATOR, d.COUNTY, None, name)
 
 
 # --------------------------------------------------------------------- Kansas
@@ -180,8 +183,9 @@ def ca():
     cls[plugged & (t == 'DH')] = 'DA'
     cls[plugged & (t != 'DH')] = 'PA'
     cls[s == 'Idle'] = 'IN'
+    name = (d.LeaseName.fillna('') + ' ' + d.get('WellNumber', pd.Series('', index=d.index)).fillna('')) if 'LeaseName' in d else None
     return _frame('CA', d.API, d.Latitude, d.Longitude, cls, False, False, s, t + ' ' + d.WellTypeLabel.fillna(''),
-                  np.nan, None, d.OperatorName, d.CountyName, d.get('SpudDate'))
+                  np.nan, None, d.OperatorName, d.CountyName, d.get('SpudDate'), name)
 
 
 # ------------------------------------------------------------------- New York
@@ -225,7 +229,7 @@ def co():
     basis = pd.Series(np.where(tvd > 0, 'TVD', np.where(md > 0, 'MD', None)), index=d.index)
     name = d.Well_Name.fillna('') + ' ' + d.Well_Num.fillna('') + ' ' + d.Loc_Name.fillna('')
     return _frame('CO', d.API_Label, d.Latitude, d.Longitude, cls, False, False, s, c, td, basis,
-                  d.Operator, None, d.Spud_Date, name)
+                  d.Operator, None, d.Spud_Date, name, label=d.Well_Name.fillna('') + ' ' + d.Well_Num.fillna(''))
 
 
 # --------------------------------------------------------------- North Dakota

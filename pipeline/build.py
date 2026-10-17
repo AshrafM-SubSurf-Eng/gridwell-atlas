@@ -17,6 +17,7 @@ from .geo import PolygonIndex
 from .grid import load_plants
 from .loads import load_places
 from .paths import BUILD, SITE_DATA, MANIFEST
+from .wellindex import write_well_index
 from .wells import load_registry, load_dow
 from . import diff as D
 
@@ -274,6 +275,7 @@ def main(prev_snapshot=None, out_site=True):
     dump = lambda name, obj, **kw: json.dump(clean(obj), open(out / name, 'w'), allow_nan=False, **kw)
     dump('counties.json', recs, separators=(',', ':'))
     dump('candidates.json', {'cols': CAND_COLS, 'rows': cands, 'places': pl_tab, 'plants': gp_tab}, separators=(',', ':'))
+    s['well_index'] = write_well_index(inv, places, plants, out / 'wells', date.today().isoformat())
     dump('stats.json', s, indent=1)
     dump('changes.json', {k: v for k, v in changes.items() if k != '_added_keys'}, indent=1)
     dump('meta.json', meta, indent=1)

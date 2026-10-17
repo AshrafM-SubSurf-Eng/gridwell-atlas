@@ -151,6 +151,9 @@ def unify(reg_in: pd.DataFrame, dow_in: pd.DataFrame):
     reg.loc[m.matched.values, 'dow'] = True
     reg.loc[m.matched.values, 'dow_id'] = m.orphanheat_id.values
     reg.loc[m.matched.values, 'src'] = 'state+DOW'
+    if 'well_name' in reg and 'well_name' in m:
+        cur = reg.loc[m.matched.values, 'well_name']
+        reg.loc[m.matched.values, 'well_name'] = cur.where(cur.notna(), m.well_name.astype('string').values)
     qa['dow_matched_to_registry'] = int(len(m))
     qa['dow_matched_by_state'] = m.state.value_counts().to_dict()
 
@@ -166,6 +169,7 @@ def unify(reg_in: pd.DataFrame, dow_in: pd.DataFrame):
     u = dow[dow.matched < 0]
     add = pd.DataFrame({
         'st': u.state.values, 'api': u.api10.values, 'api10': u.k.values,
+        'well_name': u.well_name.astype('string').values if 'well_name' in u else None,
         'lat': u.latitude.values, 'lon': u.longitude.values,
         'cls': None, 'cls4': 'OR', 'orphan': True, 'orphan_list': False, 'orphan_since_plugged': False,
         'public_plug': False, 'dow': True, 'dow_id': u.orphanheat_id.values, 'src': 'DOW',

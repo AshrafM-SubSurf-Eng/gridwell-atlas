@@ -102,7 +102,8 @@ jobs:
         run: |
           day=$(date -u +%Y-%m-%d)
           cp data/manifest.json build/manifest.json
-          gh release create "data-$day" build/snapshot.csv.gz site/data/stats.json site/data/changes.json build/manifest.json \
+          tar -czf build/wells.tar.gz -C site/data wells
+          gh release create "data-$day" build/snapshot.csv.gz site/data/stats.json site/data/changes.json build/manifest.json build/wells.tar.gz \
             --title "Data refresh $day" --notes-file build/release_notes.md
 
       - name: Package page

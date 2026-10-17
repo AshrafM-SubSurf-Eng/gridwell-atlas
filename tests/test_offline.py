@@ -96,3 +96,43 @@ def test_refresh_holds_large_count_changes():
     probs = sanity_check(old, st(600, {'OK': 100, 'KS': 500}), ['OK', 'KS'])
     assert any(p.startswith('OK:') for p in probs) and any(p.startswith('inventory') for p in probs)
     assert sanity_check(None, st(10, {'OK': 10}), ['OK']) == []
+
+
+def test_well_index_shards_by_api_prefix(tmp_path=None):
+    import json, tempfile
+    from pathlib import Path
+    from pipeline import wellindex as WI
+    n = 7
+    inv = pd.DataFrame({
+        'api10': ['3505300001', '3505300002', '3505311111', '3305301557', None, '0504520580', '05045'],
+        'api': ['35-053-00001', '35053000020000', '35-053-11111', '33-053-01557-00-00', '', '05-045-20580', '05-045'],
+        'well_name': ['A 1', None, 'B 2', 'C 3', 'D', 'E 5', 'F'], 'st': ['OK', 'OK', 'OK', 'ND', 'KS', 'CO', 'CO'],
+        'fips': ['40053'] * 3 + ['38053', '20001', '08045', '08045'], 'cls4': ['PA', 'DA', 'IN', 'IN', 'PA', 'IN', 'IN'],
+        'orphan': [False] * n, 'orphan_since_plugged': [False] * n, 'public_plug': [False] * n, 'src': ['state'] * n,
+        'raw_status': ['PA'] * n, 'raw_type': ['OIL'] * n, 'type_class': ['Oil'] * n, 'operator': ['X'] * n,
+        'spud_yr': [1980.0] * n, 'td_ft': [np.nan, 5000, 9000, 14000, 3000, 13741, 1], 'depth_basis': [None, 'MD', 'MD', 'MD', 'MD', 'TVD', 'TVD'],
+        'dev': [False] * n, 'lat': [36.0] * n, 'lon': [-98.0] * n, 't_td': [np.nan, 60, 90, 198.1, 40, 210, 20],
+        'grade': ['nd', 'low', 'mod', 'egs', 'low', 'egs', 'low'], 'fit': ['U', 'E', 'E', 'A', 'E', 'A', 'E'],
+        't5k': [50.0] * n, 't10k': [90.0] * n, 't15k': [130.0] * n, 'z_egs_m': [5000.0] * n, 'deepen_m': [np.nan] * n,
+        'grad': [30.0] * n, 'grad_n': [12] * n, 'grad_km': [3.0] * n, 'conf': ['high'] * n,
+        'plant69_km': [10.0] * n, 'plant69_i': [0] * n, 'load10k_km': [20.0] * n, 'load10k_i': [0] * n,
+        'grid': [True] * n, 'ec26': [False] * n,
+    })
+    places = pd.DataFrame({'NAME': ['Town'], 'USPS': ['OK'], 'pop': [12000]})
+    plants = pd.DataFrame({'name': ['Plant'], 'st': ['OK'], 'kv': [138.0], 'mw': [50.0]})
+    old = WI.MAX_ROWS
+    WI.MAX_ROWS = 2   # force the Oklahoma county (3 wells) to split by the sixth digit
+    try:
+        with tempfile.TemporaryDirectory() as d:
+            r = WI.write_well_index(inv, places, plants, Path(d) / 'wells', '2026-10-17')
+            idx = json.loads((Path(d) / 'wells' / 'index.json').read_text())
+            assert r['wells'] == 5 and r['without_api'] == 2
+            assert set(idx['shards']) == {'350530', '350531', '33053', '05045'}
+            assert idx['state_codes'] == {'35': 'OK', '33': 'ND', '05': 'CO'}
+            rows = json.loads((Path(d) / 'wells' / '33053.json').read_text())
+            row = dict(zip(rows['cols'], rows['rows'][0]))
+            assert row['api10'] == '3305301557' and row['api'] == '33053015570000' and row['name'] == 'C 3' and row['fit'] == 'A'
+            ok = json.loads((Path(d) / 'wells' / '350530.json').read_text())
+            assert [dict(zip(ok['cols'], x))['api'] for x in ok['rows']] == [None, '35053000020000']
+    finally:
+        WI.MAX_ROWS = old

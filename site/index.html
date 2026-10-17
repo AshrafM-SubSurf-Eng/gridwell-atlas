@@ -219,6 +219,28 @@ textarea.out{width:100%;min-height:140px;font:12px/1.4 var(--f-mono);background:
 .unitsw button{font:500 12px var(--f-body);border:0;background:transparent;color:var(--ink-2);padding:6px 10px;cursor:pointer}
 .unitsw button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
 
+/* well lookup */
+.lookup{padding:18px 20px;display:grid;gap:14px}
+.lookup .intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:12px 28px;align-items:end}
+@media (max-width:900px){.lookup .intro{grid-template-columns:1fr}}
+.lookform{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.lookform input{flex:1 1 240px;max-width:380px;font:16px var(--f-mono);padding:9px 11px;border:1px solid var(--rule-strong);border-radius:5px;background:var(--surface);color:var(--ink)}
+.examples{font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline}
+.examples button{font:12.5px var(--f-mono);background:none;border:0;border-bottom:1px dotted var(--accent);color:var(--accent);padding:0;cursor:pointer}
+.wellcard{border:1px solid var(--rule);border-radius:var(--r);background:var(--surface);padding:16px 18px;display:grid;gap:14px}
+.wellcard .wh{display:flex;justify-content:space-between;gap:12px 20px;align-items:flex-start;flex-wrap:wrap}
+.wellcard .wh>div{min-width:0}
+.wellcard h3{font-size:22px;margin-top:2px}
+.fitbig{display:grid;gap:2px;justify-items:center;min-width:76px;padding:8px 12px;border-radius:5px;text-align:center}
+.fitbig b{font-family:var(--f-display);font-size:30px;line-height:1}
+.fitbig span{font-size:11.5px;max-width:110px;line-height:1.25}
+.wkv{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px 22px;margin:0}
+.wkv>div{display:grid;gap:2px;min-width:0;border-top:1px solid var(--rule);padding-top:8px}
+.wkv dt{font-size:12px;color:var(--muted)}
+.wkv dd{margin:0;font-size:15px;font-variant-numeric:tabular-nums}
+.wkv dd small{display:block;font-size:12.5px;color:var(--ink-2)}
+.matchlist td button{font:12.5px var(--f-mono);background:none;border:0;color:var(--accent);padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
 /* updates + methods */
 .updates{padding:18px 20px;display:grid;gap:12px}
 .methods{padding:20px 22px;display:grid;gap:18px}
@@ -294,6 +316,26 @@ textarea.out{width:100%;min-height:140px;font:12px/1.4 var(--f-mono);background:
     </div>
   </div>
 
+  <section class="panel lookup" id="lookup" aria-labelledby="lkh">
+    <div class="intro">
+      <div>
+        <div class="eyebrow">Well lookup</div>
+        <h2 id="lkh">Look up a well by its API number</h2>
+      </div>
+      <p class="note">Every U.S. oil and gas well carries an API number for life: 2 digits for the state, 3 for the county and 5 for the well, sometimes followed by 2 sidetrack and 2 event digits. Type it with or without dashes, or type the first 5 or more digits to list matching wells. An operator’s AFE number is an internal budget code and lease well numbers repeat from lease to lease, so neither can identify a well.</p>
+    </div>
+    <form class="lookform" id="lookForm" role="search" aria-label="Look up a well by API number">
+      <input id="apiq" type="search" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="API number, e.g. 33-053-01557" aria-label="API number">
+      <button class="btn" type="submit">Look up</button>
+    </form>
+    <div class="examples"><span>Try:</span>
+      <button type="button" data-api="3305301557">33-053-01557</button><span>inactive, McKenzie County, ND ·</span>
+      <button type="button" data-api="0504520580">05-045-20580</button><span>shut-in, Garfield County, CO ·</span>
+      <button type="button" data-api="3703390018">37-033-90018</button><span>orphaned, Clearfield County, PA</span>
+    </div>
+    <div id="lookOut" aria-live="polite"></div>
+  </section>
+
   <section class="panel updates" aria-labelledby="uh">
     <div class="eyebrow">Self-updating</div>
     <h2 id="uh">What changed since the last refresh</h2>
@@ -355,13 +397,15 @@ const Area = km2 => km2 == null ? '—' : pair(`${n0(km2 * 0.386102)} sq mi`, `$
 let C = [], byF = new Map(), CAND = null, STATS = null, META = null, CHG = null, SRC = null, topo = null;
 let layer = 'egs', selected = null, downloads = null;
 
-Promise.all(['counties', 'counties.topo', 'stats', 'meta', 'changes', 'sources'].map(n => fetch(`data/${n}.json`).then(r => { if (!r.ok) throw new Error(n + ' ' + r.status); return r.json(); })))
+const READY = Promise.all(['counties', 'counties.topo', 'stats', 'meta', 'changes', 'sources'].map(n => fetch(`data/${n}.json`).then(r => { if (!r.ok) throw new Error(n + ' ' + r.status); return r.json(); })))
   .then(([c, t, s, m, ch, src]) => {
     C = c; C.forEach(r => byF.set(r.f, r)); topo = t; STATS = s; META = m; CHG = ch; SRC = src;
     renderAll();
     drawMap();
-    const h = (location.hash || '').replace('#c', '');
+    const hash = location.hash || '';
+    const h = hash.replace('#c', '');
     select(byF.has(h) ? h : '38053', false);
+    if (/^#api\d{5,14}$/.test(hash)) { $('#apiq').value = apiFmt(hash.slice(4)); lookup(hash.slice(4)).then(() => $('#lookup').scrollIntoView()); }
     fetch('data/candidates.json').then(r => r.json()).then(j => { CAND = j; if (selected) renderCandidates(byF.get(selected)); });
   })
   .catch(err => { $('#dossier').innerHTML = `<div class="panel loading">The data did not load (${esc(err.message)}). Reload the page to try again.</div>`; });
@@ -373,7 +417,7 @@ document.querySelectorAll('.unitsw button').forEach(b => {
     UNITS = b.dataset.u;
     try { localStorage.setItem('gw-units', UNITS); } catch (e) {}
     document.querySelectorAll('.unitsw button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.u === UNITS)));
-    renderAll(); if (countyPaths) paint(); if (selected) renderCounty(byF.get(selected));
+    renderAll(); if (countyPaths) paint(); if (selected) renderCounty(byF.get(selected)); if (lastWell) showWell(lastWell, false);
   });
 });
 
@@ -870,6 +914,128 @@ function renderMethods() {
     const when = m.retrieved ? m.retrieved.slice(0, 10) + (m.http_last_modified ? ` · server ${esc(m.http_last_modified)}` : '') : (x.vintage ? String(x.vintage) : '');
     return `<tr><td>${esc(x.layer)}</td><td><a href="${esc(x.landing || x.url)}">${esc(x.publisher)}</a> — ${esc(x.dataset)}</td><td>${when}</td><td>${cad(x.group)}</td><td class="h">${esc(m.sha256 || x.sha256 || '—')}</td></tr>`;
   }).join('');
+}
+
+// ---------- well lookup by API number ----------
+let WIDX = null, WREF = null, lastWell = null;
+const WSHARD = new Map();
+const getJSON = u => fetch(u).then(r => { if (!r.ok) throw new Error(String(r.status)); return r.json(); });
+const apiFmt = a => [a.slice(0, 2), a.slice(2, 5), a.slice(5, 10), a.slice(10, 12), a.slice(12, 14)].filter(x => x).join('-');
+// meanings of the commonest agency status codes; anything else is shown as published
+const STATUS_TXT = {PA: 'plugged and abandoned', TA: 'temporarily abandoned', SI: 'shut-in', IA: 'inactive', IN: 'inactive', AB: 'abandoned, not plugged', DRY: 'dry hole', OR: 'orphaned'};
+function apiDigits(q) {
+  let d = String(q || '').replace(/\D/g, '');
+  if ([9, 11, 13].includes(d.length)) d = '0' + d;   // a leading zero dropped from state codes 01-09
+  return d.slice(0, 14);
+}
+const shard = k => { if (!WSHARD.has(k)) WSHARD.set(k, getJSON(`data/wells/${k}.json`)); return WSHARD.get(k); };
+const GRADE_TXT = {egs: 'EGS grade', near: 'near-EGS', mod: 'moderate', low: 'low', nd: 'not graded'};
+const SRC_TXT = (w) => w.src === 'DOW' ? 'USGS documented orphaned wells (2022)' : w.src === 'state+DOW' ? `${w.st} state registry and the USGS orphaned-well list` : `${w.st} state registry`;
+
+document.getElementById('lookForm').addEventListener('submit', e => { e.preventDefault(); lookup($('#apiq').value); });
+document.querySelectorAll('.examples button[data-api]').forEach(b => b.addEventListener('click', () => { $('#apiq').value = b.textContent; lookup(b.dataset.api); }));
+$('#lookOut').addEventListener('click', e => {
+  const b = e.target.closest('[data-api]');
+  if (b) { $('#apiq').value = apiFmt(b.dataset.api); lookup(b.dataset.api); return; }
+  const c = e.target.closest('[data-county]');
+  if (c) { select(c.dataset.county, false); document.querySelector('.console').scrollIntoView({behavior: 'smooth', block: 'start'}); }
+});
+
+async function lookup(q) {
+  const out = $('#lookOut');
+  const d = apiDigits(q);
+  if (d.length < 5) { out.innerHTML = '<p class="empty">Enter at least the first five digits of an API number: two for the state and three for the county.</p>'; return; }
+  out.innerHTML = '<p class="note muted">Looking up…</p>';
+  try { await READY; await wellIndex(); } catch (e) { out.innerHTML = noIndex(); return; }
+  const keys = Object.keys(WIDX.shards).filter(k => d.length >= k.length ? d.startsWith(k) : k.startsWith(d));
+  if (!keys.length) { out.innerHTML = notFound(d); return; }
+  let parts;
+  try { parts = await Promise.all(keys.map(shard)); } catch (e) { out.innerHTML = `<p class="empty">The well file for this county did not load (${esc(e.message)}). Try again in a moment.</p>`; return; }
+  const cols = WIDX.cols;
+  const rows = parts.flatMap(p => p.rows).map(r => Object.fromEntries(cols.map((c, i) => [c, r[i]])));
+  if (d.length >= 10) {
+    const w = rows.find(r => r.api10 === d.slice(0, 10));
+    if (w) { showWell(w, true); } else { out.innerHTML = notFound(d); }
+    return;
+  }
+  listWells(rows.filter(r => r.api10.startsWith(d)), d);
+}
+async function wellIndex() {
+  if (!WIDX) WIDX = await getJSON('data/wells/index.json');
+  if (!WREF) WREF = await getJSON('data/wells/ref.json').catch(() => ({places: {}, plants: {}}));
+  return WIDX;
+}
+function noIndex() {
+  const live = META && META.public_url;
+  if (!live || location.href.startsWith(live)) return '<p class="empty">The well-by-well index did not load. It is published with each monthly data refresh; try again in a few minutes.</p>';
+  return `<p class="empty">The well-by-well index is not included in this copy of the atlas. Look wells up on the live atlas: <a href="${esc(live)}#lookup">${esc(live.replace(/^https?:\/\//, ''))}</a>.</p>`;
+}
+function notFound(d) {
+  const st = WIDX.state_codes[d.slice(0, 2)];
+  const reg = STATS.registry_states.includes(st);
+  const why = !st ? `API state code ${esc(d.slice(0, 2))} has no wells in GRIDWELL yet. Full state registries are loaded for ${STATS.registry_states.join(', ')}; elsewhere only USGS-documented orphaned wells are counted.`
+    : reg ? `GRIDWELL lists only abandoned wells: inactive, orphaned, plugged or dry. A producing well, or one the ${esc(st)} registry does not yet list as abandoned, will not appear.`
+    : `Only USGS-documented orphaned wells are loaded for ${esc(st)} so far, so other abandoned wells there will not appear.`;
+  return `<p class="empty">No well with API number <b class="mono">${esc(apiFmt(d))}</b> is in GRIDWELL. ${why}</p>`;
+}
+function listWells(rows, d) {
+  const out = $('#lookOut');
+  if (!rows.length) { out.innerHTML = notFound(d); return; }
+  rows.sort((a, b) => FITS.indexOf(a.fit) - FITS.indexOf(b.fit) || (b.t_td ?? -999) - (a.t_td ?? -999) || a.api10.localeCompare(b.api10));
+  const top = rows.slice(0, 50);
+  out.innerHTML = `<p class="note">${fmt(rows.length)} well${rows.length > 1 ? 's' : ''} in GRIDWELL start with <b class="mono">${esc(apiFmt(d))}</b>${rows.length > 50 ? '; the 50 with the best EGS fit are listed' : ''}. Choose one for its full record.</p>
+    <div class="tscroll matchlist"><table><thead><tr><th>API number</th><th>Well</th><th>Type</th><th>Fit</th><th class="n">Total depth</th><th class="n">Temperature at total depth</th></tr></thead><tbody>
+    ${top.map(w => `<tr><td><button type="button" data-api="${w.api10}">${apiFmt(w.api10)}</button></td><td>${esc(w.name || '—')}</td>
+      <td><i class="dot" style="background:${TCOL[w.cls]}"></i>${TNAME[w.cls] || '—'}</td>
+      <td><span class="ftag" style="background:${FCOL[w.fit]};color:${FINK[w.fit]}">${w.fit}</span></td>
+      <td class="n">${w.td != null ? Dft(w.td) : '—'}</td><td class="n">${T(w.t_td)}</td></tr>`).join('')}
+    </tbody></table></div>`;
+}
+function showWell(w, setHash) {
+  lastWell = w;
+  const c = byF.get(w.fips);
+  const place = c ? `${esc(c.n)}, ${esc(c.s)}` : esc(w.st);
+  const plant = w.p69_i != null && WREF.plants[w.p69_i];
+  const town = w.town_i != null && WREF.places[w.town_i];
+  const pills = [`<span class="pill" style="border-color:${TCOL[w.cls]}"><i class="dot" style="background:${TCOL[w.cls]}"></i>${TNAME[w.cls] || w.cls}</span>`];
+  if (w.orph && w.cls !== 'OR') pills.push(`<span class="pill">On an orphaned-well list${w.orpp ? ', since plugged' : ''}</span>`);
+  if (w.pub) pills.push('<span class="pill">Plugged with public funds</span>');
+  if (w.grid) pills.push(`<span class="pill yes">${CHECK}Within ${Km(10)} of a ≥ 69 kV connection</span>`);
+  if (w.ec) pills.push(`<span class="pill yes">${CHECK}County is a 2026 energy community</span>`);
+  const tdNote = w.td == null ? 'Not published by the source' : `${Dft(w.td)}<small>${w.basis === 'TVD' ? 'true vertical depth' : 'measured along the hole'}${w.dev ? '; the record looks horizontal, so it is not graded' : ''}</small>`;
+  const tTd = w.t_td != null ? `${T(w.t_td)}<small>${GRADE_TXT[w.grade] || ''}</small>` : `Not graded<small>${w.dev ? 'measured depth on an apparently horizontal well' : 'no vertical depth on record'}</small>`;
+  const deep = w.deep == null ? '—' : w.deep <= 0 ? 'None: already at EGS grade' : Dm(w.deep);
+  const items = [
+    ['Status as reported', `${esc(w.status || '—')}${STATUS_TXT[w.status] ? ` <small>${STATUS_TXT[w.status]}${w.type ? `; type code ${esc(w.type)}` : ''}</small>` : w.type ? `<small>type code ${esc(w.type)}</small>` : ''}`],
+    ['Well type', esc(w.wtype || '—')],
+    ['Operator of record', w.op ? esc(w.op) : (w.cls === 'OR' ? 'None able to plug it (orphaned)' : 'Not published')],
+    ['Year drilling began', w.spud ?? 'Not published'],
+    ['Total depth', tdNote],
+    ['Temperature at total depth', tTd],
+    [`Depth where rock reaches ${T(150)}`, Dm(w.zegs)],
+    ['Deepening needed to reach it', deep],
+    [`Temperature at ${Dft(10000)}`, T(w.t10)],
+    [`Temperature at ${Dft(15000)}`, T(w.t15)],
+    ['Geothermal gradient', w.grad != null ? `${G(w.grad)}<small>${w.gn} bottom-hole readings, nearest ${w.gkm < 0.1 ? 'at the well site' : Km(w.gkm)}; ${esc(w.conf)} confidence</small>` : 'No readings nearby'],
+    ['Nearest power plant at ≥ 69 kV', w.p69 != null ? `${Km(w.p69)}${plant ? `<small>${esc(plant[0])}, ${esc(plant[1])} · ${n0(plant[2])} kV</small>` : ''}` : '—'],
+    ['Nearest town of 10,000 or more', w.town != null ? `${Km(w.town)}${town ? `<small>${esc(town[0])}, ${esc(town[1])} · ${fmt(town[2])} people</small>` : ''}` : '—'],
+    ['Location', w.lat != null ? `${w.lat.toFixed(5)}, ${w.lon.toFixed(5)}` : 'Not published'],
+  ];
+  $('#lookOut').innerHTML = `<article class="wellcard">
+    <div class="wh">
+      <div>
+        <div class="eyebrow">API ${apiFmt(w.api || w.api10)}</div>
+        <h3>${esc(w.name || 'Well name not published')}</h3>
+        <p class="note muted">${place} · source: ${esc(SRC_TXT(w))} · data built ${esc(WIDX.built)}</p>
+      </div>
+      <div class="fitbig" style="background:${FCOL[w.fit]};color:${FINK[w.fit]}"><b>${w.fit}</b><span>${esc(FSHORT[w.fit])}</span></div>
+    </div>
+    <div class="pills">${pills.join('')}</div>
+    <p class="note">${esc(STATS.fit_labels[w.fit] || '')}</p>
+    <dl class="wkv">${items.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
+    <div class="btns">${c ? `<button class="btn ghost" type="button" data-county="${w.fips}">Open the county file for ${esc(c.n)}</button>` : ''}</div>
+  </article>`;
+  if (setHash) { try { history.replaceState(null, '', '#api' + w.api10); } catch (e) {} }
 }
 })();
 </script>

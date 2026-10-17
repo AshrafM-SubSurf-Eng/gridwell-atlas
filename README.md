@@ -31,6 +31,8 @@ GRIDWELL puts every abandoned well it can source into one inventory and asks, fo
 
 4. **Can it reach the grid, and does it earn the tax-credit bonus?** Distance to the nearest power plant that ties in at ≥ 69 kV (EIA-860), distance to towns, and energy-community status under IRS Notice 2026-39.
 
+5. **Look up any well by its API number.** Type a 10- or 14-digit API number (dashes optional) to get that well's abandonment type, status as the agency reports it, operator, depth, modelled temperatures, EGS fit rating, distance to the grid and energy-community status. Typing the first 5 or more digits lists matching wells. API numbers are used because they are the public, permanent ID of a U.S. well; AFE numbers are internal company budget codes and lease well numbers repeat.
+
 Field units come first with SI units in brackets throughout; the page has a switch for SI first.
 
 ## How it stays current
@@ -40,7 +42,7 @@ Field units come first with SI units in brackets throughout; the page has a swit
 1. **Fetch** (`pipeline/fetch.py`): re-downloads the six state registries listed in `sources.json` and checksums each file. Federal reference layers are pinned by SHA-256 and kept as exact copies in `data/reference`, so the build does not depend on a federal server being up; a changed upstream file stops the build and opens an issue rather than silently changing results. Newer annual vintages (Census, EIA-860) and changes to watched pages (USGS orphaned-well release, Treasury energy-community page) also open review issues. A registry that fails to download falls back to last month's cached copy and is marked stale on the page.
 2. **Build** (`pipeline/build.py`): rebuilds the inventory, temperatures, EGS ratings and county files. If a state's well count falls by more than 20% or rises by more than 50% against the published build (more often a changed agency file layout than a real change), the published data are left as they were and a review issue is opened; re-run with *allow large change* once the change is confirmed.
 3. **Compare** (`pipeline/diff.py`): matches the new inventory against the previous release's `snapshot.csv.gz` and records the wells that joined (newly recorded as plugged, dry, temporarily abandoned, idle, shut-in or orphaned), changed type, or left.
-4. **Publish**: commits `site/data`, appends a line to `CHANGELOG.md`, creates a dated `data-YYYY-MM-DD` release with the snapshot and statistics, and redeploys GitHub Pages.
+4. **Publish**: commits `site/data`, appends a line to `CHANGELOG.md`, creates a dated `data-YYYY-MM-DD` release with the snapshot, statistics and the per-well lookup index (`wells.tar.gz`, one small file per API county code; too large to keep in git), and redeploys GitHub Pages. A page deploy outside the monthly run unpacks the index from the latest data release.
 
 Run it by hand from the Actions tab (**Monthly data refresh → Run workflow**, tick *force* to rebuild even if nothing changed).
 
