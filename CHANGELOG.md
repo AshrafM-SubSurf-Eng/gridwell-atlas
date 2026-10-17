@@ -4,3 +4,4 @@ One line per published monthly refresh.
 
 - 2026-10-12: 948,992 wells; baseline for change tracking; registries downloaded by the author on 2026-10-12 (OK, KS, CA, NY, CO, ND)
 - 2026-10-13: 948,994 wells; baseline for change tracking; sources updated: ca, ny, co, nd
+- 2026-10-17: 949,488 wells; 927 joined, 93 changed type, 433 left; sources updated: ok, ca, ny, co, nd

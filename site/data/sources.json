@@ -37,7 +37,7 @@
    "dataset": "WellSTAR Oil and Gas Wells (MapServer layer 0)",
    "url": "https://gis.conservation.ca.gov/server/rest/services/WellSTAR/Wells/MapServer/0",
    "where": "WellStatus IN ('Plugged','Idle','PluggedOnly')",
-   "fields": "API,WellStatus,WellType,WellTypeLabel,WellDesignation,OperatorCode,OperatorName,FieldName,CountyName,Latitude,Longitude,GISSource,SpudDate,isDirectionallyDrilled,isConfidential",
+   "fields": "API,WellStatus,WellType,WellTypeLabel,WellDesignation,OperatorCode,OperatorName,FieldName,CountyName,Latitude,Longitude,GISSource,SpudDate,isDirectionallyDrilled,isConfidential,LeaseName,WellNumber",
    "landing": "https://lab.data.ca.gov/dataset/wellstar-oil-and-gas-wells",
    "save_as": "states/ca/ca_wellstar.csv.gz",
    "definitions": "https://www.conservation.ca.gov/calgem/idle_well",
