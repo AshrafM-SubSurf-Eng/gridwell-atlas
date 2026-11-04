@@ -2,6 +2,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>GRIDWELL Atlas</title>
 <meta name="description" content="Self-updating national screen of abandoned US oil and gas wells for Enhanced Geothermal System repurposing: wells sorted by abandonment type, temperature at each well's own depth, grid tie-in and energy-community status for every county.">
+<link rel="canonical" href="https://ashrafm-subsurf-eng.github.io/gridwell-atlas/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="GRIDWELL Atlas: abandoned oil and gas wells screened for geothermal (EGS) reuse">
+<meta property="og:description" content="Which of America’s abandoned oil and gas wells could become Enhanced Geothermal System wells? Every well sorted by abandonment type, rock temperature at its own depth, grid distance and tax-credit status, rebuilt monthly.">
+<meta property="og:url" content="https://ashrafm-subsurf-eng.github.io/gridwell-atlas/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "GRIDWELL Atlas: Geothermal Repurposing Inventory of Abandoned Wells", "alternateName": "GRIDWELL Atlas", "description": "A self-updating screen of abandoned oil and gas wells in the United States for repurposing as Enhanced Geothermal System (EGS) wells. Wells from six state registries (Oklahoma, Kansas, California, New York, Colorado and North Dakota) and the USGS list of documented orphaned wells are sorted into four abandonment types (inactive, orphaned, plugged and abandoned, dry and abandoned), given a modelled rock temperature at each well's own vertical depth from bottom-hole temperature records, and rated for EGS fit, with distance to the high-voltage grid and energy-community tax-credit status. Rebuilt every month; any well can be looked up by its API number.", "url": "https://ashrafm-subsurf-eng.github.io/gridwell-atlas/", "sameAs": "https://github.com/AshrafM-SubSurf-Eng/gridwell-atlas", "version": "1.0.0", "creator": {"@type": "Person", "name": "Ashraf Mohammed", "affiliation": {"@type": "Organization", "name": "Independent Researcher"}, "sameAs": "https://orcid.org/0009-0000-9232-1466"}, "license": "https://creativecommons.org/licenses/by/4.0/", "isAccessibleForFree": true, "keywords": ["enhanced geothermal systems", "EGS", "abandoned oil and gas wells", "orphaned wells", "well repurposing", "geothermal energy", "bottom-hole temperature", "API well number", "energy communities", "United States"], "spatialCoverage": {"@type": "Place", "name": "United States"}, "variableMeasured": ["abandonment type", "modelled formation temperature at total depth", "EGS fit rating", "distance to a 69 kV or higher grid interconnection", "energy-community status"]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
@@ -261,7 +268,7 @@ textarea.out{width:100%;min-height:140px;font:12px/1.4 var(--f-mono);background:
   <header class="mast">
     <div>
       <div class="eyebrow">Geothermal Repurposing Inventory of Abandoned Wells</div>
-      <div class="word" aria-label="GRIDWELL Atlas"><span>GRIDWELL</span><span class="w2">Atlas</span></div>
+      <h1 class="word" aria-label="GRIDWELL Atlas"><span>GRIDWELL</span><span class="w2">Atlas</span></h1>
       <p class="lede question">Which of America's abandoned oil and gas wells could be turned into Enhanced Geothermal System (EGS) wells?</p>
       <p class="lede">GRIDWELL sorts every inactive or unproductive well by how it was abandoned, estimates the rock temperature at its own depth, and measures how far it sits from a high-voltage grid connection and whether it earns the energy-community tax-credit bonus. Pick any county.</p>
       <p class="byline">Ashraf Mohammed · Independent Researcher · ORCID <a href="https://orcid.org/0009-0000-9232-1466">0009-0000-9232-1466</a> · v<span class="mono" id="ver">—</span></p>
@@ -425,7 +432,7 @@ function renderAll() { renderFresh(); renderLedger(); renderTypes(); renderUpdat
 
 // ---------- freshness ----------
 function nextRun(fromIso) {
-  const d = new Date(fromIso + 'T00:00:00Z');
+  const d = new Date(fromIso + 'T23:59:59Z');   // a build on the 3rd ran after that day's slot
   let n = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 3, 9, 17));
   if (n <= d) n = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 3, 9, 17));
   return n;

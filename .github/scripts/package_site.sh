@@ -5,6 +5,15 @@
 set -euo pipefail
 rm -rf _site && mkdir -p _site
 cp -r site/data _site/data
-{ printf '<!doctype html>\n<html lang="en">\n'; cat site/index.html; printf '\n</html>\n'; } > _site/index.html
+# on the open web the page gets a descriptive title for search results; the artifact copy keeps the short name
+{ printf '<!doctype html>\n<html lang="en">\n'; sed 's|<title>GRIDWELL Atlas</title>|<title>GRIDWELL Atlas: abandoned oil and gas wells screened for geothermal (EGS) reuse</title>|' site/index.html; printf '\n</html>\n'; } > _site/index.html
+# search-engine files: a sitemap dated by this deploy, and any site-verification file kept in site/
+cat > _site/sitemap.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://ashrafm-subsurf-eng.github.io/gridwell-atlas/</loc><lastmod>$(date -u +%Y-%m-%d)</lastmod><changefreq>monthly</changefreq></url>
+</urlset>
+EOF
+for f in site/google*.html; do [ -e "$f" ] && cp "$f" _site/; done
 touch _site/.nojekyll
 echo "packaged $(du -sh _site | cut -f1)"
