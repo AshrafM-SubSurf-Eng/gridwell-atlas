@@ -1,8 +1,11 @@
 # GRIDWELL Atlas
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23925294.svg)](https://doi.org/10.5281/zenodo.23925294)
+
 **Geothermal Repurposing Inventory of Abandoned Wells** — a self-updating national screen of abandoned oil and gas wells in the United States for repurposing as Enhanced Geothermal System (EGS) wells.
 
 **Live atlas:** https://ashrafm-subsurf-eng.github.io/gridwell-atlas/  
+**DOI:** [10.5281/zenodo.23925294](https://doi.org/10.5281/zenodo.23925294) (archived on Zenodo)  
 **Author:** Ashraf Mohammed, Independent Researcher · ORCID [0009-0000-9232-1466](https://orcid.org/0009-0000-9232-1466)  
 **Version:** 1.0.0. Screening information, not engineering, legal or tax advice.
 
@@ -79,4 +82,4 @@ The author used Claude (Anthropic), an AI assistant, as a tool to get and proces
 
 ## Licence and citation
 
-Code: MIT (`LICENSE`). Derived data: CC BY 4.0 (`LICENSE-DATA.md`). Inputs keep their own terms. Cite with `CITATION.cff`.
+Code: MIT (`LICENSE`). Derived data: CC BY 4.0 (`LICENSE-DATA.md`). Inputs keep their own terms. Cite as: Mohammed, A. (2026). *GRIDWELL Atlas: Geothermal Repurposing Inventory of Abandoned Wells* (version 1.0.0). Zenodo. [doi:10.5281/zenodo.23925294](https://doi.org/10.5281/zenodo.23925294). The same details are in `CITATION.cff`.
