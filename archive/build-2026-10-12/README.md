@@ -5,7 +5,7 @@ Every figure in the GRIDWELL Atlas paper is computed from this build. The files 
 | File | Contents |
 |---|---|
 | `site/data/stats.json` | National totals, counts by abandonment type and fit rating, temperature-model validation |
-| `site/data/candidates.json` | Wells rated A to D, with modelled temperatures, depth, grid distance and energy-community status |
+| `site/data/candidates.json` | The wells listed for each county on the atlas, best EGS fit first (20,229 wells in 1,240 counties), with type, depth, modelled temperatures, fit rating and grid distance |
 | `site/data/counties.json` | County summaries shown on the atlas map |
 | `site/data/counties.topo.json` | County boundaries used by the map |
 | `site/data/sources.json`, `site/data/meta.json` | Sources, retrieval dates and build metadata |
