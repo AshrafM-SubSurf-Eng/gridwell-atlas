@@ -62,6 +62,8 @@ Run it by hand from the Actions tab (**Monthly data refresh → Run workflow**, 
 
 Full URLs, licences and checksums: `sources.json` and `data/manifest.json`.
 
+The build of 12 October 2026, from which every figure in the paper is computed, is kept unchanged in `archive/build-2026-10-12/` and archived on Zenodo with the release `paper-data-2026-10-12`.
+
 ## Temperature model
 
 Harrison-corrected bottom-hole temperatures are turned into gradients from a 59 °F (15 °C) surface. For a target depth *z*, only measurements taken between 0.75 *z* and 1.25 *z* are used: the 12 nearest within 46.6 mi (75 km), with readings more than 3 median absolute deviations from the local median rejected, inverse-distance weighted with a 0.6 mi (1 km) floor. Each build re-checks the model on 20,000 held-out measurements and publishes the errors in `site/data/stats.json` (`qa.thermal.validation`). Wells that report only measured depth on an apparently horizontal or deviated record are not graded at total depth.

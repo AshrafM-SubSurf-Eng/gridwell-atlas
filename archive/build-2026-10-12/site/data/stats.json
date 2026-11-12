@@ -1,0 +1,1294 @@
+{
+ "generated": "2026-10-12",
+ "version": "0.2.0",
+ "counties": 3235,
+ "ec2026_counties": 867,
+ "ec2025_counties": 851,
+ "ec2024_counties": 901,
+ "ec2023_counties": 965,
+ "urnat2025": 4.28,
+ "cc_tracts": 4477,
+ "cc_counties": 853,
+ "registry_states": [
+  "OK",
+  "KS",
+  "CA",
+  "NY",
+  "CO",
+  "ND"
+ ],
+ "dow_states": [
+  "AL",
+  "AR",
+  "IL",
+  "IN",
+  "KY",
+  "LA",
+  "MI",
+  "MO",
+  "MS",
+  "MT",
+  "NE",
+  "NM",
+  "NV",
+  "OH",
+  "PA",
+  "TN",
+  "TX",
+  "UT",
+  "WV",
+  "WY"
+ ],
+ "fit_labels": {
+  "A": "Best fit: inactive, unplugged, with an operator of record, and at least 302 \u00b0F (150 \u00b0C) at total depth",
+  "B": "Strong fit after ownership transfer: orphaned, unplugged, at least 302 \u00b0F (150 \u00b0C) at total depth",
+  "C": "Conditional: plugged well at EGS grade (plugs must be drilled out), or unplugged well at 248\u2013302 \u00b0F (120\u2013150 \u00b0C) that needs deepening",
+  "D": "Limited: dry hole at 248 \u00b0F (120 \u00b0C) or more, or plugged well at 248\u2013302 \u00b0F (120\u2013150 \u00b0C); value is mainly as data or a sidetrack start",
+  "E": "Below EGS grade at total depth: under 248 \u00b0F (120 \u00b0C)",
+  "U": "Not graded: no vertical total depth on record"
+ },
+ "qa": {
+  "registry": {
+   "rows": 863758,
+   "classified": 832577,
+   "state_orphan_list": 31181,
+   "no_coordinates": 9411,
+   "county_by_name": 488917,
+   "county_by_point": 372597,
+   "county_unassigned": 2244,
+   "name_point_compared": 480038,
+   "name_point_agreement": 0.9972439681858519,
+   "rows_by_state": {
+    "KS": 309059,
+    "OK": 276666,
+    "CA": 177002,
+    "CO": 62990,
+    "NY": 23153,
+    "ND": 14888
+   }
+  },
+  "dow": {
+   "wells_in": 114086,
+   "county_by_name": 113483,
+   "county_by_point": 468,
+   "county_unassigned_offshore": 135,
+   "name_point_agreement": 0.9971354304811416,
+   "name_point_compared": 113106
+  },
+  "unify": {
+   "registry_rows_in": 863758,
+   "registry_dup_api_removed": {
+    "CA": 0,
+    "CO": 5,
+    "KS": 11523,
+    "ND": 0,
+    "NY": 50,
+    "OK": 0
+   },
+   "registry_rows_out": 852180,
+   "dow_KS_spatial_matched": 1325,
+   "dow_KS_spatial_candidates": 2886,
+   "dow_KS_possible_duplicates_max": 697,
+   "dow_KS_unmatched_added": 1561,
+   "dow_matched_to_registry": 17274,
+   "dow_matched_by_state": {
+    "OK": 11560,
+    "CA": 3243,
+    "KS": 1325,
+    "ND": 640,
+    "CO": 399,
+    "NY": 107
+   },
+   "dow_added_unmatched": 96812,
+   "dow_added_by_state": {
+    "OH": 20550,
+    "PA": 19119,
+    "KY": 12603,
+    "IL": 8476,
+    "NY": 6922,
+    "TX": 5848,
+    "MO": 4628,
+    "LA": 4237,
+    "OK": 4156,
+    "WV": 3559,
+    "KS": 1561,
+    "WY": 1323,
+    "NM": 652,
+    "IN": 575,
+    "TN": 481,
+    "NE": 479,
+    "MI": 444,
+    "AR": 349,
+    "ND": 313,
+    "MT": 221,
+    "CA": 92,
+    "UT": 72,
+    "NV": 63,
+    "AL": 49,
+    "MS": 30,
+    "CO": 10
+   },
+   "inventory": 948992,
+   "by_class": {
+    "PA": 518750,
+    "DA": 241664,
+    "OR": 130813,
+    "IN": 57765
+   },
+   "orphan_flag": 134138,
+   "orphan_since_plugged": 3325,
+   "duplicate_keys": 0
+  },
+  "thermal": {
+   "input_rows": 400134,
+   "dropped_null": 0,
+   "dropped_bad_coords": 0,
+   "dropped_depth_out_of_range": 40108,
+   "dropped_gradient_out_of_range": 4642,
+   "usable_rows": 355384,
+   "mean_correction_c": 7.582468972963763,
+   "median_gradient_c_per_km": 30.6183585764437,
+   "depth_unit": "m",
+   "supported_pct": 98.9,
+   "depth_matched_pct_of_graded": 80.34,
+   "points_used": 355384,
+   "validation": {
+    "ge_1000m": {
+     "held_out": 20000,
+     "min_depth_m": 1000,
+     "exclude_km": 0.5,
+     "matched_share": 0.988,
+     "orphanheat_v0_1_form": {
+      "n": 19921,
+      "mae_c": 7.41,
+      "median_abs_c": 4.07,
+      "bias_c": 0.45,
+      "rmse_c": 12.59,
+      "p90_abs_c": 17.89,
+      "share_within_10c": 0.773
+     },
+     "all_depth_1km_floor": {
+      "n": 19921,
+      "mae_c": 7.35,
+      "median_abs_c": 4.05,
+      "bias_c": 0.44,
+      "rmse_c": 12.49,
+      "p90_abs_c": 17.65,
+      "share_within_10c": 0.776
+     },
+     "gridwell_depth_matched": {
+      "n": 19921,
+      "mae_c": 6.43,
+      "median_abs_c": 3.6,
+      "bias_c": 0.37,
+      "rmse_c": 10.61,
+      "p90_abs_c": 15.81,
+      "share_within_10c": 0.807
+     }
+    },
+    "ge_2500m": {
+     "held_out": 20000,
+     "min_depth_m": 2500,
+     "exclude_km": 0.5,
+     "matched_share": 0.988,
+     "orphanheat_v0_1_form": {
+      "n": 19945,
+      "mae_c": 13.34,
+      "median_abs_c": 9.07,
+      "bias_c": 2.55,
+      "rmse_c": 19.67,
+      "p90_abs_c": 29.49,
+      "share_within_10c": 0.537
+     },
+     "all_depth_1km_floor": {
+      "n": 19945,
+      "mae_c": 13.23,
+      "median_abs_c": 9.06,
+      "bias_c": 2.53,
+      "rmse_c": 19.4,
+      "p90_abs_c": 29.13,
+      "share_within_10c": 0.537
+     },
+     "gridwell_depth_matched": {
+      "n": 19945,
+      "mae_c": 11.22,
+      "median_abs_c": 7.79,
+      "bias_c": 1.42,
+      "rmse_c": 16.23,
+      "p90_abs_c": 25.2,
+      "share_within_10c": 0.597
+     }
+    }
+   },
+   "method": "Harrison-corrected BHT gradients; for each target depth z, BHTs measured within 0.75z-1.25z, 12 nearest within 75 km, 3-MAD outlier rejection, inverse-distance-squared weights with a 1 km floor; fallback to all depths when fewer than 3 match."
+  },
+  "thermal_depth_unit_evidence": {
+   "m": {
+    "usable_rows": 360026,
+    "median_gradient_c_per_km": 27.2,
+    "share_in_envelope_pct": 98.65
+   },
+   "ft": {
+    "usable_rows": 337585,
+    "median_gradient_c_per_km": 88.88,
+    "share_in_envelope_pct": 86.73
+   },
+   "chosen": "m",
+   "basis": "median implied gradient inside 12.0-60.0 degC/km, then the larger share of measurements inside the configured envelope"
+  }
+ },
+ "inv": {
+  "n": 948992,
+  "counties": 1240,
+  "states": 26,
+  "by_class": {
+   "IN": 57765,
+   "OR": 130813,
+   "PA": 518750,
+   "DA": 241664
+  },
+  "by_fit": {
+   "A": 300,
+   "B": 16,
+   "C": 1902,
+   "D": 7308,
+   "E": 372855,
+   "U": 566611
+  },
+  "by_fit_grid": {
+   "A": 7,
+   "B": 0,
+   "C": 273,
+   "D": 2311,
+   "E": 58024,
+   "U": 203523
+  },
+  "by_fit_grid_ec": {
+   "A": 0,
+   "B": 0,
+   "C": 215,
+   "D": 2053,
+   "E": 7730,
+   "U": 132533
+  },
+  "matrix": {
+   "IN": {
+    "egs": 300,
+    "near": 885,
+    "mod": 3035,
+    "low": 18573,
+    "nd": 34972
+   },
+   "OR": {
+    "egs": 16,
+    "near": 24,
+    "mod": 6,
+    "low": 6181,
+    "nd": 124586
+   },
+   "PA": {
+    "egs": 993,
+    "near": 5223,
+    "mod": 18012,
+    "low": 181030,
+    "nd": 313492
+   },
+   "DA": {
+    "egs": 560,
+    "near": 1525,
+    "mod": 3875,
+    "low": 142143,
+    "nd": 93561
+   }
+  },
+  "by_cov": {
+   "registry": {
+    "IN": 57765,
+    "OR": 47055,
+    "PA": 518750,
+    "DA": 241664
+   },
+   "DOW": {
+    "IN": 0,
+    "OR": 83758,
+    "PA": 0,
+    "DA": 0
+   }
+  },
+  "by_state": {
+   "AL": {
+    "c": {
+     "IN": 0,
+     "OR": 49,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 49
+    },
+    "vd_n": 0
+   },
+   "AR": {
+    "c": {
+     "IN": 0,
+     "OR": 349,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 349
+    },
+    "vd_n": 0
+   },
+   "CA": {
+    "c": {
+     "IN": 27295,
+     "OR": 2742,
+     "PA": 130455,
+     "DA": 16602
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 177094
+    },
+    "vd_n": 0
+   },
+   "CO": {
+    "c": {
+     "IN": 7179,
+     "OR": 22,
+     "PA": 30398,
+     "DA": 25396
+    },
+    "fit": {
+     "A": 224,
+     "B": 0,
+     "C": 786,
+     "D": 3583,
+     "E": 56603,
+     "U": 1799
+    },
+    "vd_n": 61196
+   },
+   "IL": {
+    "c": {
+     "IN": 0,
+     "OR": 8476,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 8476
+    },
+    "vd_n": 0
+   },
+   "IN": {
+    "c": {
+     "IN": 0,
+     "OR": 575,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 575
+    },
+    "vd_n": 0
+   },
+   "KS": {
+    "c": {
+     "IN": 15280,
+     "OR": 9634,
+     "PA": 158415,
+     "DA": 115768
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 5,
+     "D": 10,
+     "E": 291273,
+     "U": 7809
+    },
+    "vd_n": 291292
+   },
+   "KY": {
+    "c": {
+     "IN": 0,
+     "OR": 12603,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 12603
+    },
+    "vd_n": 0
+   },
+   "LA": {
+    "c": {
+     "IN": 0,
+     "OR": 4237,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 4237
+    },
+    "vd_n": 0
+   },
+   "MI": {
+    "c": {
+     "IN": 0,
+     "OR": 444,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 444
+    },
+    "vd_n": 0
+   },
+   "MO": {
+    "c": {
+     "IN": 0,
+     "OR": 4628,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 4628
+    },
+    "vd_n": 0
+   },
+   "MS": {
+    "c": {
+     "IN": 0,
+     "OR": 30,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 30
+    },
+    "vd_n": 0
+   },
+   "MT": {
+    "c": {
+     "IN": 0,
+     "OR": 221,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 221
+    },
+    "vd_n": 0
+   },
+   "ND": {
+    "c": {
+     "IN": 1898,
+     "OR": 475,
+     "PA": 6480,
+     "DA": 6348
+    },
+    "fit": {
+     "A": 76,
+     "B": 16,
+     "C": 1111,
+     "D": 3715,
+     "E": 7575,
+     "U": 2708
+    },
+    "vd_n": 12494
+   },
+   "NE": {
+    "c": {
+     "IN": 0,
+     "OR": 479,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 479
+    },
+    "vd_n": 0
+   },
+   "NM": {
+    "c": {
+     "IN": 0,
+     "OR": 652,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 652
+    },
+    "vd_n": 0
+   },
+   "NV": {
+    "c": {
+     "IN": 0,
+     "OR": 63,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 63
+    },
+    "vd_n": 0
+   },
+   "NY": {
+    "c": {
+     "IN": 2559,
+     "OR": 6930,
+     "PA": 18440,
+     "DA": 2096
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 17404,
+     "U": 12621
+    },
+    "vd_n": 17442
+   },
+   "OH": {
+    "c": {
+     "IN": 0,
+     "OR": 20550,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 20550
+    },
+    "vd_n": 0
+   },
+   "OK": {
+    "c": {
+     "IN": 3554,
+     "OR": 27252,
+     "PA": 174562,
+     "DA": 75454
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 280822
+    },
+    "vd_n": 0
+   },
+   "PA": {
+    "c": {
+     "IN": 0,
+     "OR": 19119,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 19119
+    },
+    "vd_n": 0
+   },
+   "TN": {
+    "c": {
+     "IN": 0,
+     "OR": 481,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 481
+    },
+    "vd_n": 0
+   },
+   "TX": {
+    "c": {
+     "IN": 0,
+     "OR": 5848,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 5848
+    },
+    "vd_n": 0
+   },
+   "UT": {
+    "c": {
+     "IN": 0,
+     "OR": 72,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 72
+    },
+    "vd_n": 0
+   },
+   "WV": {
+    "c": {
+     "IN": 0,
+     "OR": 3559,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 3559
+    },
+    "vd_n": 0
+   },
+   "WY": {
+    "c": {
+     "IN": 0,
+     "OR": 1323,
+     "PA": 0,
+     "DA": 0
+    },
+    "fit": {
+     "A": 0,
+     "B": 0,
+     "C": 0,
+     "D": 0,
+     "E": 0,
+     "U": 1323
+    },
+    "vd_n": 0
+   }
+  },
+  "orphan_flag": 134138,
+  "orphan_since_plugged": 3325,
+  "public_plug": 17342,
+  "td_n": 385071,
+  "vd_n": 382424,
+  "dev_n": 2647,
+  "dev_by_state": {
+   "ND": 2324,
+   "CO": 224,
+   "KS": 94,
+   "NY": 5
+  },
+  "vd_median_ft": 3338.0,
+  "vd_states": [
+   "CO",
+   "KS",
+   "ND",
+   "NY"
+  ],
+  "grad_median": 29.64,
+  "grad_supported_pct": 98.9,
+  "w69": 264138,
+  "pl69_median_km": 18.1,
+  "ec26": 244341,
+  "spud_median": 1979.0
+ },
+ "cls": {
+  "IN": {
+   "n": 57765,
+   "vd_n": 22793,
+   "td_q": [
+    500.0,
+    1013.0,
+    2700.0,
+    5600.0,
+    7546.0
+   ],
+   "ttd_q": [
+    20.4,
+    26.2,
+    36.1,
+    69.4,
+    110.5
+   ],
+   "deepen_q_m": [
+    966.0,
+    2088.0,
+    3080.0,
+    4236.0,
+    5459.0
+   ],
+   "hs_q": [
+    0.04,
+    0.083,
+    0.17,
+    0.409,
+    0.695
+   ],
+   "t10_q": [
+    88.8,
+    104.5,
+    125.7,
+    142.3,
+    161.0
+   ],
+   "t15_q": [
+    120.0,
+    147.3,
+    184.9,
+    203.4,
+    232.0
+   ],
+   "op_known": 57301,
+   "w69": 26928,
+   "ec26": 27775,
+   "orphan_flag": 0,
+   "dow": 0,
+   "spud_q": [
+    1969.0,
+    1985.0,
+    2006.0,
+    2012.0,
+    2016.0
+   ],
+   "vd_by_state": {
+    "KS": 13561,
+    "CO": 7100,
+    "NY": 1644,
+    "ND": 488
+   },
+   "ge_10000ft": 429,
+   "hist": [
+    4111,
+    7662,
+    2516,
+    2054,
+    1569,
+    859,
+    1257,
+    1665,
+    522,
+    265,
+    211,
+    82,
+    17,
+    2,
+    1,
+    0
+   ],
+   "types": {
+    "Gas": 23609,
+    "Other / test": 16575,
+    "Oil": 8670,
+    "Injection / disposal": 4023,
+    "Dry hole": 2334,
+    "Oil & gas": 2301,
+    "Not reported": 253
+   },
+   "ttd_ge_90": 4220,
+   "t10_ge_90": 51147,
+   "t15_ge_90": 57155,
+   "ttd_ge_120": 1185,
+   "t10_ge_120": 31749,
+   "t15_ge_120": 51774,
+   "ttd_ge_150": 300,
+   "t10_ge_150": 9725,
+   "t15_ge_150": 42034
+  },
+  "OR": {
+   "n": 130813,
+   "vd_n": 6227,
+   "td_q": [
+    510.0,
+    750.0,
+    1014.0,
+    1600.0,
+    2878.0
+   ],
+   "ttd_q": [
+    20.9,
+    24.1,
+    28.2,
+    31.6,
+    36.3
+   ],
+   "deepen_q_m": [
+    2276.0,
+    2702.0,
+    3183.0,
+    3863.0,
+    4759.0
+   ],
+   "hs_q": [
+    0.044,
+    0.067,
+    0.097,
+    0.129,
+    0.167
+   ],
+   "t10_q": [
+    74.0,
+    82.1,
+    95.3,
+    113.0,
+    139.0
+   ],
+   "t15_q": [
+    93.8,
+    109.3,
+    126.9,
+    161.6,
+    201.3
+   ],
+   "op_known": 33999,
+   "w69": 20645,
+   "ec26": 66429,
+   "orphan_flag": 130813,
+   "dow": 110761,
+   "spud_q": [
+    1969.0,
+    1982.0,
+    1990.0,
+    2005.0,
+    2011.0
+   ],
+   "vd_by_state": {
+    "KS": 6138,
+    "ND": 80,
+    "CO": 7,
+    "NY": 2
+   },
+   "ge_10000ft": 26,
+   "hist": [
+    1443,
+    4254,
+    311,
+    102,
+    60,
+    12,
+    2,
+    4,
+    15,
+    8,
+    9,
+    6,
+    1,
+    0,
+    0,
+    0
+   ],
+   "types": {
+    "Not reported": 70194,
+    "Oil": 31362,
+    "Gas": 16244,
+    "Injection / disposal": 5255,
+    "Dry hole": 3935,
+    "Other / test": 2004,
+    "Oil & gas": 1819
+   },
+   "ttd_ge_90": 46,
+   "t10_ge_90": 76557,
+   "t15_ge_90": 120541,
+   "ttd_ge_120": 40,
+   "t10_ge_120": 27308,
+   "t15_ge_120": 74152,
+   "ttd_ge_150": 16,
+   "t10_ge_150": 7910,
+   "t15_ge_150": 40524
+  },
+  "PA": {
+   "n": 518750,
+   "vd_n": 205290,
+   "td_q": [
+    650.0,
+    936.0,
+    2944.0,
+    4220.0,
+    7099.0
+   ],
+   "ttd_q": [
+    22.1,
+    25.8,
+    36.8,
+    51.1,
+    105.7
+   ],
+   "deepen_q_m": [
+    1247.0,
+    2628.0,
+    3587.0,
+    4415.0,
+    5333.0
+   ],
+   "hs_q": [
+    0.053,
+    0.082,
+    0.166,
+    0.267,
+    0.646
+   ],
+   "t10_q": [
+    86.4,
+    94.2,
+    108.8,
+    137.8,
+    153.2
+   ],
+   "t15_q": [
+    116.5,
+    132.0,
+    154.8,
+    198.8,
+    221.4
+   ],
+   "op_known": 510811,
+   "w69": 178456,
+   "ec26": 136164,
+   "orphan_flag": 2927,
+   "dow": 2927,
+   "spud_q": [
+    1945.0,
+    1958.0,
+    1980.0,
+    1994.0,
+    2008.0
+   ],
+   "vd_by_state": {
+    "KS": 155998,
+    "CO": 29821,
+    "NY": 13821,
+    "ND": 5650
+   },
+   "ge_10000ft": 1794,
+   "hist": [
+    35542,
+    69969,
+    49239,
+    17326,
+    6751,
+    2821,
+    3931,
+    14184,
+    3518,
+    938,
+    607,
+    316,
+    81,
+    30,
+    5,
+    0
+   ],
+   "types": {
+    "Oil": 192901,
+    "Gas": 147123,
+    "Other / test": 82053,
+    "Not reported": 59823,
+    "Injection / disposal": 30738,
+    "Oil & gas": 6112
+   },
+   "ttd_ge_90": 24228,
+   "t10_ge_90": 426039,
+   "t15_ge_90": 508222,
+   "ttd_ge_120": 6216,
+   "t10_ge_120": 198679,
+   "t15_ge_120": 446268,
+   "ttd_ge_150": 993,
+   "t10_ge_150": 60553,
+   "t15_ge_150": 275858
+  },
+  "DA": {
+   "n": 241664,
+   "vd_n": 148114,
+   "td_q": [
+    1002.0,
+    2720.0,
+    3670.0,
+    4635.0,
+    5700.0
+   ],
+   "ttd_q": [
+    27.0,
+    35.1,
+    44.6,
+    57.5,
+    70.8
+   ],
+   "deepen_q_m": [
+    2264.0,
+    2887.0,
+    3569.0,
+    4263.0,
+    4861.0
+   ],
+   "hs_q": [
+    0.09,
+    0.152,
+    0.219,
+    0.312,
+    0.409
+   ],
+   "t10_q": [
+    86.2,
+    92.7,
+    101.6,
+    115.2,
+    136.4
+   ],
+   "t15_q": [
+    116.8,
+    129.9,
+    143.5,
+    162.4,
+    194.4
+   ],
+   "op_known": 241302,
+   "w69": 38109,
+   "ec26": 13973,
+   "orphan_flag": 398,
+   "dow": 398,
+   "spud_q": [
+    1945.0,
+    1956.0,
+    1972.0,
+    1984.0,
+    2001.0
+   ],
+   "vd_by_state": {
+    "KS": 115595,
+    "CO": 24268,
+    "ND": 6276,
+    "NY": 1975
+   },
+   "ge_10000ft": 1289,
+   "hist": [
+    7262,
+    36635,
+    51556,
+    31227,
+    11867,
+    4401,
+    1980,
+    1168,
+    879,
+    538,
+    311,
+    175,
+    75,
+    25,
+    3,
+    1
+   ],
+   "types": {
+    "Dry hole": 241664
+   },
+   "ttd_ge_90": 5960,
+   "t10_ge_90": 197329,
+   "t15_ge_90": 238399,
+   "ttd_ge_120": 2085,
+   "t10_ge_120": 48408,
+   "t15_ge_120": 210108,
+   "ttd_ge_150": 560,
+   "t10_ge_150": 13560,
+   "t15_ge_150": 94374
+  }
+ },
+ "ks_depth_by_class_ft": {
+  "IN": [
+   300.0,
+   734.0,
+   1267.0,
+   3361.0,
+   4906.0
+  ],
+  "OR": [
+   508.0,
+   745.0,
+   1002.0,
+   1563.0,
+   2784.0
+  ],
+  "PA": [
+   600.0,
+   809.0,
+   2488.0,
+   3530.0,
+   4383.0
+  ],
+  "DA": [
+   900.0,
+   2443.0,
+   3492.0,
+   4220.0,
+   4770.0
+  ]
+ },
+ "top": {
+  "by_state": {
+   "CO": {
+    "A": 224,
+    "B": 0
+   },
+   "ND": {
+    "A": 76,
+    "B": 16
+   }
+  },
+  "counties": {
+   "08103": 112,
+   "08045": 107,
+   "38053": 57,
+   "38007": 17,
+   "38105": 5,
+   "38023": 5,
+   "38011": 5,
+   "08077": 3,
+   "38025": 3,
+   "08081": 2
+  },
+  "grid_counties": {
+   "38053": 5,
+   "38105": 2
+  },
+  "grid_ec_counties": {}
+ },
+ "plants": {
+  "operable": 14327,
+  "kv69": 5394,
+  "geothermal_plants": 66,
+  "geothermal_mw": 4133.0
+ },
+ "places": {
+  "incorporated": 19479,
+  "pop10k": 3221
+ },
+ "units": {
+  "egs_t_c": 150.0,
+  "grid_km": 10.0,
+  "ref_depths_ft": [
+   5000,
+   10000,
+   15000
+  ],
+  "f_bins": [
+   50,
+   75,
+   100,
+   125,
+   150,
+   175,
+   200,
+   225,
+   250,
+   275,
+   300,
+   325,
+   350,
+   375,
+   400,
+   425,
+   450
+  ],
+  "surface_t_c": 15.0
+ },
+ "changes": {
+  "baseline": true,
+  "date": "2026-10-12",
+  "note": "First build with change tracking: every well is the baseline. From the next monthly refresh, wells that join the inventory are listed here.",
+  "added_n": 0,
+  "removed_n": 0,
+  "reclassified_n": 0,
+  "added_by_fips": {}
+ }
+}
