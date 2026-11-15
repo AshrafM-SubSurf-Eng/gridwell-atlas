@@ -6,7 +6,7 @@ set -euo pipefail
 rm -rf _site && mkdir -p _site
 cp -r site/data _site/data
 # on the open web the page gets a descriptive title for search results; the artifact copy keeps the short name
-{ printf '<!doctype html>\n<html lang="en">\n'; sed 's|<title>GRIDWELL Atlas</title>|<title>GRIDWELL Atlas: abandoned oil and gas wells screened for geothermal (EGS) reuse</title>|' site/index.html; printf '\n</html>\n'; } > _site/index.html
+{ printf '<!doctype html>\n<html lang="en">\n<head>\n'; sed 's|<title>GRIDWELL Atlas</title>|<title>GRIDWELL Atlas: abandoned oil and gas wells screened for geothermal (EGS) reuse</title>|' site/index.html; printf '\n</html>\n'; } > _site/index.html
 # search-engine files: a sitemap dated by this deploy, and any site-verification file kept in site/
 cat > _site/sitemap.xml <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
