@@ -6,7 +6,12 @@ set -euo pipefail
 rm -rf _site && mkdir -p _site
 cp -r site/data _site/data
 # on the open web the page gets a descriptive title for search results; the artifact copy keeps the short name
-{ printf '<!doctype html>\n<html lang="en">\n<head>\n'; sed 's|<title>GRIDWELL Atlas</title>|<title>GRIDWELL Atlas: abandoned oil and gas wells screened for geothermal (EGS) reuse</title>|' site/index.html; printf '\n</html>\n'; } > _site/index.html
+# the head ends after the first </style>; an explicit <head>...</head><body> lets strict parsers (site verification) find the meta tags
+{ printf '<!doctype html>\n<html lang="en">\n<head>\n'
+  sed 's|<title>GRIDWELL Atlas</title>|<title>GRIDWELL Atlas: abandoned oil and gas wells screened for geothermal (EGS) reuse</title>|' site/index.html \
+    | awk '{print} !done && $0 == "</style>" {print "</head>"; print "<body>"; done = 1}'
+  printf '\n</body>\n</html>\n'; } > _site/index.html
+grep -q '^</head>$' _site/index.html || { echo "page head not closed: no </style> line found" >&2; exit 1; }
 # search-engine files: a sitemap dated by this deploy, and any site-verification file kept in site/
 cat > _site/sitemap.xml <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
