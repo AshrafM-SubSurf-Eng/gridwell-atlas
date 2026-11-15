@@ -62,7 +62,7 @@ Run it by hand from the Actions tab (**Monthly data refresh → Run workflow**, 
 
 Full URLs, licences and checksums: `sources.json` and `data/manifest.json`.
 
-The build of 12 October 2026, from which every figure in the paper is computed, is kept unchanged in `archive/build-2026-10-12/` and archived on Zenodo with the release `paper-data-2026-10-12`.
+The build of 12 October 2026, from which every figure in the paper is computed, is kept unchanged in `archive/build-2026-10-12/` and archived on Zenodo with the release `paper-data-2026-10-12` ([doi:10.5281/zenodo.24155830](https://doi.org/10.5281/zenodo.24155830)).
 
 ## Temperature model
 

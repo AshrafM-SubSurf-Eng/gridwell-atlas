@@ -1,6 +1,6 @@
 # Build of 12 October 2026
 
-Every figure in the GRIDWELL Atlas paper is computed from this build. The files in this folder are exact copies of `site/data/` and `data/manifest.json` at commit [`fca14b6`](https://github.com/AshrafM-SubSurf-Eng/gridwell-atlas/tree/fca14b6a43a60db9b3f3b98eb3e67873ee046f63) (12 October 2026). They are kept here so that the release which archives them on Zenodo carries the data behind the paper. Later monthly builds differ from this build as the state registries change.
+Every figure in the GRIDWELL Atlas paper is computed from this build. The files in this folder are exact copies of `site/data/` and `data/manifest.json` at commit [`fca14b6`](https://github.com/AshrafM-SubSurf-Eng/gridwell-atlas/tree/fca14b6a43a60db9b3f3b98eb3e67873ee046f63) (12 October 2026). They are kept here so that the release which archives them on Zenodo carries the data behind the paper: release `paper-data-2026-10-12`, [doi:10.5281/zenodo.24155830](https://doi.org/10.5281/zenodo.24155830). Later monthly builds differ from this build as the state registries change.
 
 | File | Contents |
 |---|---|
