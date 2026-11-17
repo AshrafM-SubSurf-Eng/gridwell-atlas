@@ -21,3 +21,16 @@ keywords:
   - well repurposing
   - geothermal energy
   - energy communities
+preferred-citation:
+  type: article
+  status: preprint
+  title: "GRIDWELL Atlas: a self-updating screen to find the abandoned oil and gas wells best placed to add Enhanced Geothermal System electricity to the U.S. grid"
+  authors:
+    - family-names: Mohammed
+      given-names: Ashraf
+      affiliation: Independent Researcher
+      orcid: "https://orcid.org/0009-0000-9232-1466"
+  journal: "EarthArXiv"
+  year: 2026
+  doi: 10.31223/X5XZ4Z
+  url: "https://doi.org/10.31223/X5XZ4Z"
