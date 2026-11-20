@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use GRIDWELL Atlas, please cite it as below."
+message: "If you use GRIDWELL Atlas, please cite the paper: Mohammed, A. (2026). GRIDWELL Atlas: a self-updating screen to find the abandoned oil and gas wells best placed to add Enhanced Geothermal System electricity to the U.S. grid. EarthArXiv preprint. https://doi.org/10.31223/X5XZ4Z. To cite the software itself: Mohammed, A. (2026). GRIDWELL Atlas: Geothermal Repurposing Inventory of Abandoned Wells (version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.23408754."
 title: "GRIDWELL Atlas: Geothermal Repurposing Inventory of Abandoned Wells"
 abstract: "A self-updating national screen of abandoned oil and gas wells in the United States for repurposing as Enhanced Geothermal System (EGS) wells. One inventory of 948,992 wells from six state registries and the USGS documented orphaned-well dataset, sorted by abandonment type, graded by modelled temperature at each well's own vertical depth, and refreshed monthly."
 authors:
